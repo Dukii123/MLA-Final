@@ -1,0 +1,25 @@
+Week 10 | target = scores.json total | Python 3.12.14 | scikit-learn 1.7.2 | CPU only
+--- [1] Target check (5,000 utterances) ---
+floor(median) == total: 5000/5000 | round(median): 2905 | median exact: 1370 | mean exact: 52
+Below 6: train125 425/2500, test 330/2500 (base rate 13%) | max R@10 = 76%
+--- [2] Hyper-parameters by GroupKFold-5 over 125 train speakers (CV MAE mean±SD) ---
+SVR log-mel: 0.3: 0.927±0.105 | 1: 0.923±0.095 | 3: 0.931±0.091 | 10: 0.960±0.083 -> chose {'C': 1}
+RF log-mel: 1: 0.915±0.079 | 5: 0.924±0.089 | 20: 0.947±0.088 -> chose {'min_samples_leaf': 1}
+Chosen by CV: length-only C=10, no-duration C=1, weight alpha=2, LR C=0.01, RFc leaf=1, w2v {'layer': 8, 'C': 1}
+--- [3] Test (run once): R@10 P@10 R@20 P@20 | MAE PCC ---
+random/constant         10%  13%  20%  13% | 1.190 n/a
+SVR log-mel             48%  64%  67%  44% | 0.902 0.598
+RF log-mel              48%  64%  71%  47% | 0.913 0.598
+SVR length only         48%  64%  70%  46% | 0.879 0.590
+SVR log-mel no length   35%  47%  53%  35% | 1.011 0.447
+SVR log-mel + weight    47%  62%  68%  45% | 0.915 0.587
+LR balanced (cls)       51%  67%  71%  47% | classifier
+RF balanced (cls)       40%  52%  68%  45% | classifier
+SVR wav2vec2            52%  68%  77%  51% | 0.772 0.711
+Secondary (mean-of-5 target) R@20: SVR log-mel 69%, SVR wav2vec2 79%
+--- [4] Speakers, age, worst cases, raters ---
+Speaker MAE median: log-mel 0.74, w2v 0.66 | worst 12 spk = 22% of error | r(MAE, spk mean) = -0.71
+Child: 52 spk, 68 below 6, MAE 0.86->0.81 | Adult: 73 spk, 262 below 6, MAE 0.93->0.74
+Worst 5 (total<6, SVR log-mel): 014040089 0->7.2, 069020059 0->7.1, 014040122 0->7.1, 014040090 0->7.0, 069020075 0->6.7
+One rater >= 3 points from other four: 448 utt | |mean - median| there: 0.59 vs all: 0.27
+Analysis total 75.9 s | wav2vec2 full extraction (CPU): 796 s

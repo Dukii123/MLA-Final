@@ -1,0 +1,19 @@
+Run date: 2026-10-21T03:38:34.893661+07:00 | CPU only
+Hardware: Apple M2, 8 CPU cores, 8 GiB RAM (Darwin arm64); no GPU used
+Python 3.12.14 | NumPy 2.3.5
+--- [1] Sample audio and labels ---
+Utterance: 000010011 | reference text: WE CALL IT BEAR | 16000 Hz mono, 2.58 s
+Five rater totals: 7.6, 9.0, 7.9, 8.0, 9.1
+Target = mean of five = 8.32 | scores.json total = 8
+--- [2] Rater agreement (5,000 utterances) ---
+accuracy: pairwise PCC=0.661 ICC(1,1)=0.599 ICC(1,5)=0.882 mean rater SD=1.062
+fluency: pairwise PCC=0.690 ICC(1,1)=0.488 ICC(1,5)=0.827 mean rater SD=1.237
+prosodic: pairwise PCC=0.669 ICC(1,1)=0.489 ICC(1,5)=0.827 mean rater SD=1.219
+total: pairwise PCC=0.708 ICC(1,1)=0.627 ICC(1,5)=0.894 mean rater SD=1.018
+--- [3] Speaker split and constant baseline ---
+Split speakers/utterances: train 100/2000, validation 25/500, test 125/2500 | speaker overlap: 0
+Raw-mean vs published target differences: 4948/5000
+Train-mean constant: 7.473273
+validation: MAE=1.3726 RMSE=1.6844 PCC=undefined
+test: MAE=1.1234 RMSE=1.4468 PCC=undefined
+verify.py total time (after imports): 0.883 s

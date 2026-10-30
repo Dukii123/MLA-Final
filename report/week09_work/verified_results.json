@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-21T03:38:34.893661+07:00",
+  "hardware": "Apple M2, 8 CPU cores, 8 GiB RAM (Darwin arm64); no GPU used",
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "machine": "arm64",
+  "split": {
+    "train": [
+      100,
+      2000
+    ],
+    "validation": [
+      25,
+      500
+    ],
+    "test": [
+      125,
+      2500
+    ]
+  },
+  "speaker_overlap": 0,
+  "constant": 7.473273000000001,
+  "metrics": {
+    "validation": {
+      "MAE": 1.3725744079999995,
+      "RMSE": 1.6844255068316318,
+      "PCC": null
+    },
+    "test": {
+      "MAE": 1.1234274815999998,
+      "RMSE": 1.4468142165260196,
+      "PCC": null
+    }
+  },
+  "agreement": {
+    "accuracy": [
+      0.6609004862695517,
+      0.5988335901057393,
+      0.8818477453736582,
+      1.0618021824986275
+    ],
+    "fluency": [
+      0.6902949910901083,
+      0.4884117974787939,
+      0.8267944105619812,
+      1.2365717855129195
+    ],
+    "prosodic": [
+      0.6685660652033365,
+      0.4893366592804496,
+      0.8273238130730096,
+      1.2185211005072727
+    ],
+    "total": [
+      0.7082555603803169,
+      0.6273360394726067,
+      0.893808089557277,
+      1.0178647534494278
+    ]
+  },
+  "mean_target_mismatches": 4948,
+  "sample": {
+    "id": "000010011",
+    "text": "WE CALL IT BEAR",
+    "total": [
+      7.6,
+      9.0,
+      7.9,
+      8.0,
+      9.1
+    ],
+    "target": 8.32,
+    "published": 8,
+    "sample_rate": 16000,
+    "duration_seconds": 2.58
+  },
+  "sha256": {
+    "scores-detail.json": "8a90ff40558fe8032d9bfa919429dcae267c0ec3fbdedf1dca30c0515ea989e1",
+    "scores.json": "31c847b8ee29d61d8fe338bcbb1d4c4721425f05481d2144ad57cd19ea1159f8",
+    "train_utt2spk": "e83546f91fa7444547b8c690ef004ad514eee1f7066d38ec87f7a6c847c84737",
+    "test_utt2spk": "061291f397f8c281ff1bf6bf388e875ab9c4cc0de66f37d8559e690af08964be",
+    "000010011.WAV": "b9486ce67a0310dd6677f6bce98b076b213e1cefdf00d5786827c1f8af141809"
+  },
+  "total_script_seconds": 0.8825367919635028
+}

@@ -1,0 +1,47 @@
+Week 11 | target = scores.json total | Python 3.14.5 | scikit-learn 1.9.1 | CPU only
+--- [1] Target check (5,000 utterances) ---
+floor(median) == total: 5000/5000 | round(median): 2905 | median exact: 1370 | mean exact: 52
+Below 6: train125 425/2500, test 330/2500 (base rate 13%) | max R@10 = 76%
+--- [2] Hyper-parameters by GroupKFold-5 over 125 train speakers (CV MAE mean±SD) ---
+SVR log-mel: 0.3: 0.918±0.048 | 1: 0.911±0.051 | 3: 0.925±0.051 | 10: 0.945±0.058 -> chose {'C': 1}
+RF log-mel: 1: 0.909±0.031 | 5: 0.910±0.031 | 20: 0.942±0.032 -> chose {'min_samples_leaf': 1}
+Chosen by CV: length-only C=1, no-duration C=1, weight alpha=2, LR C=0.1, RFc leaf=1, w2v {'layer': 8, 'C': 1}, w2v+len {'layer': 8, 'C': 1}, LR-w2v {'layer': 4, 'C': 0.01}
+--- [3] Test (run once): R@10 P@10 R@20 P@20 | MAE PCC ---
+random/constant         10%  13%  20%  13% | 1.190 n/a
+SVR log-mel             48%  64%  67%  44% | 0.902 0.598
+RF log-mel              48%  64%  71%  47% | 0.913 0.598
+SVR length only         48%  64%  70%  46% | 0.875 0.592
+SVR log-mel no length   35%  47%  53%  35% | 1.011 0.447
+SVR log-mel + weight    47%  62%  68%  45% | 0.915 0.587
+LR balanced (cls)       48%  64%  68%  45% | classifier
+RF balanced (cls)       40%  53%  68%  45% | classifier
+SVR wav2vec2            52%  68%  77%  51% | 0.772 0.711
+SVR wav2vec2 + length   52%  69%  77%  51% | 0.771 0.712
+LR balanced (wav2vec)   51%  67%  74%  49% | classifier
+Secondary (mean-of-5 target) R@20: SVR log-mel 69%, SVR wav2vec2 79%
+--- [4] Speakers, age, worst cases, raters ---
+Speaker MAE median: log-mel 0.74, w2v 0.66 | worst 12 spk = 22% of error | r(MAE, spk mean) = -0.71
+Child: 52 spk, 68 below 6, MAE 0.86->0.81 | Adult: 73 spk, 262 below 6, MAE 0.93->0.74
+Worst 5 (total<6, SVR log-mel): 014040089 0->7.2, 069020059 0->7.1, 014040122 0->7.1, 014040090 0->7.0, 069020075 0->6.7
+One rater >= 3 points from other four: 448 utt | |mean - median| there: 0.59 vs all: 0.27
+--- [5] CV table: every configuration (recall@20% mean±SD | MAE mean±SD) ---
+SVR log-mel              R@20 CV  77.8%±13.1 | MAE CV 0.911±0.051
+RF log-mel               R@20 CV  77.3%± 9.6 | MAE CV 0.909±0.031
+SVR length only          R@20 CV  72.7%±12.9 | MAE CV 0.885±0.086
+SVR log-mel no length    R@20 CV  70.0%±11.0 | MAE CV 1.029±0.040
+SVR log-mel + weight     R@20 CV  78.7%±13.2 | MAE CV 0.908±0.047
+LR balanced (cls)        R@20 CV  75.9%± 9.4 | MAE CV n/a (classifier)
+RF balanced (cls)        R@20 CV  78.3%± 9.0 | MAE CV n/a (classifier)
+SVR wav2vec2             R@20 CV  79.8%±10.4 | MAE CV 0.797±0.047
+SVR wav2vec2 + length    R@20 CV  79.8%±10.4 | MAE CV 0.795±0.047
+LR balanced (wav2vec)    R@20 CV  80.4%± 8.4 | MAE CV n/a (classifier)
+--- [6] Halves by sec/word (median split on test, only saved predictions read) ---
+median sec/word = 0.578 | fast n=1248 (below6 36) | slow n=1252 (below6 294)
+fast: R@20 length-only 50% | wav2vec2 78% (R@20 within the half)
+slow: R@20 length-only 54% | wav2vec2 58% (R@20 within the half)
+--- [7] Test group total <= 2 (for listening task) ---
+n = 12 | mean prediction: SVR log-mel 7.00, SVR length only 6.94, SVR wav2vec2 6.95
+predicted > 5 points: SVR log-mel 12/12, SVR length only 12/12, SVR wav2vec2 12/12
+--- [8] Extra: LR balanced on wav2vec embeddings (optional experiment) ---
+LR balanced wav2vec: CV R@20 80.4%±8.4 | test R@10 51%, R@20 74%, P@10 67%, P@20 49%
+Analysis total 204.6 s

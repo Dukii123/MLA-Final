@@ -1,0 +1,15 @@
+{
+  "id": "000010011",
+  "text": "WE CALL IT BEAR",
+  "total": [
+    7.6,
+    9.0,
+    7.9,
+    8.0,
+    9.1
+  ],
+  "target": 8.32,
+  "published": 8,
+  "sample_rate": 16000,
+  "duration_seconds": 2.58
+}

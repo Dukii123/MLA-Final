@@ -1,0 +1,4 @@
+--- Figures ---
+fig2_curve.png | listen 30%: length-only 80%, log-mel 83%, wav2vec2 88% of below-6
+fig3_bias.png | mean (pred - true) for total <= 4: log-mel +2.79, wav2vec2 +2.40 (n=187)
+fig1_recall.png, fig4_speakers.png | 9 models, 125 test speakers

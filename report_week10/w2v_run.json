@@ -1,0 +1,16 @@
+{
+  "model": "facebook/wav2vec2-base",
+  "layers": [
+    4,
+    8,
+    12
+  ],
+  "device": "cpu",
+  "torch": "2.14.1+cpu",
+  "transformers": "5.20.2",
+  "python": "3.14.5",
+  "n_utterances": 5000,
+  "audio_hours": 5.567432777777777,
+  "model_load_seconds": 1.0755988000018988,
+  "extract_seconds": 1485.0001181999978
+}

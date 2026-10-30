@@ -1,0 +1,11 @@
+{
+  "model": "facebook/wav2vec2-base",
+  "n": 50,
+  "warmup": 3,
+  "audio_seconds": 144.337,
+  "cpu": {
+    "seconds": 14.331185799999957,
+    "ms_per_utt": 286.62371599999915,
+    "estimate_5000_minutes": 23.885309666666597
+  }
+}

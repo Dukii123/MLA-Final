@@ -1,0 +1,39 @@
+{
+  "listen20": {
+    "SVR log-mel": 0.6696969696969697,
+    "RF log-mel": 0.706060606060606,
+    "SVR log-mel bỏ độ dài": 0.5333333333333333,
+    "SVR log-mel + trọng số": 0.6818181818181818,
+    "LR phân loại cân bằng": 0.6787878787878788,
+    "RF phân loại cân bằng": 0.6757575757575758,
+    "SVR chỉ độ dài": 0.7,
+    "SVR wav2vec 2.0": 0.7666666666666667,
+    "SVR wav2vec + độ dài": 0.7666666666666667,
+    "LR phân loại cân bằng (wav2vec)": 0.7393939393939394
+  },
+  "halves": {
+    "fast": {
+      "n": 1248,
+      "n_below6": 36,
+      "recall20": {
+        "length": 0.5,
+        "w2v": 0.7777777777777778
+      }
+    },
+    "slow": {
+      "n": 1252,
+      "n_below6": 294,
+      "recall20": {
+        "length": 0.5408163265306123,
+        "w2v": 0.5816326530612245
+      }
+    }
+  },
+  "speed": {
+    "median": 0.5780000209808349,
+    "n_fast": 1248,
+    "n_slow": 1252,
+    "below6_fast": 36,
+    "below6_slow": 294
+  }
+}

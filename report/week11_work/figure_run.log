@@ -1,0 +1,4 @@
+--- Figures week11 ---
+fig1_cv_test.png | CV vs test recall@20 for all configurations
+fig2_halves.png | fast: length 50% vs w2v 78%; slow: length 54% vs w2v 58%
+fig3_speed_dist.png | median sec/word 0.578; fast 1248 utt, slow 1252 utt
