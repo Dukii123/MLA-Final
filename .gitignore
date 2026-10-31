@@ -1,0 +1,13 @@
+# macOS / Python
+.DS_Store
+__pycache__/
+*.pyc
+
+# Môi trường chạy local
+webapp/.venv/
+
+# Dữ liệu nặng: tải lại theo webapp/README.md
+webapp/data/speechocean762/
+webapp/data/uploads/
+webapp/data/*.tar.gz
+webapp/models/wav2vec2-base/

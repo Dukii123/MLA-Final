@@ -1,0 +1,28 @@
+{
+  "trained_at": "2026-10-31 10:53:19",
+  "n_train": 2500,
+  "n_test": 2500,
+  "features": {
+    "logmel": "40 mel bands, mean+std theo frame, + độ dài giây (81 chiều)",
+    "wav2vec": "facebook/wav2vec2-base, trung bình theo thời gian của tầng 8 (768 chiều)",
+    "length": "giây và giây/từ (2 chiều)"
+  },
+  "configs": {
+    "svr_logmel": {
+      "C": 1
+    },
+    "svr_w2v": {
+      "layer": 8,
+      "C": 1
+    },
+    "svr_length": {
+      "C": 1
+    },
+    "lr_w2v": {
+      "layer": 4,
+      "C": 0.01,
+      "class_weight": "balanced"
+    }
+  },
+  "seconds": 3.361650333041325
+}

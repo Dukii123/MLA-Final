@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MLA · Nhóm 05 — Ưu tiên nghe lại bài đọc điểm thấp</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zm6.5 0H17v14h-3.5z"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 3l5 5h-3.5v7h-3V8H7l5-5zM4 18h16v2H4z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zm-6 9h2a4 4 0 0 0 8 0h2a6 6 0 0 1-5 5.9V20h3v2H8v-2h3v-2.1A6 6 0 0 1 6 12z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M11 3h2v9l3-3 1.4 1.4L12 16 6.6 10.4 8 9l3 3V3zM4 19h16v2H4z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 11h11l-4.5-4.5L13 5l7 7-7 7-1.5-1.5L16 13H5z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M9.5 16.2 5.3 12l-1.4 1.4L9.5 19 20.1 8.4 18.7 7z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4 17.6 5 12 10.6z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 2a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm-1 3h2v4.6l3.2 1.9-1 1.7L11 14z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M9 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm7 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM2 20c0-3.3 3.1-6 7-6s7 2.7 7 6v1H2zm14.5 1v-1c0-2-.8-3.8-2.2-5.1.5-.1 1.1-.2 1.7-.2 3.6 0 6.5 2.4 6.5 5.4V21z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19zM11 9h2v5h-2zm0 7h2v2h-2z"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 10h2v4H3zm4-3h2v10H7zm4-3h2v16h-2zm4 4h2v8h-2zm4 3h2v2h-2z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M8.6 5 15.6 12l-7 7L7.2 17.6 12.8 12 7.2 6.4z"/></symbol>
+</svg>
+
+<header class="site-header">
+  <a class="brand" href="#overview" aria-label="Về trang tổng quan">
+    <span class="brand-mark">05</span>
+    <span class="brand-text"><strong>MLA</strong><small>Nhóm 05 · 61FIT4MLA</small></span>
+  </a>
+  <nav class="tabs" id="tabs" aria-label="Các phần của demo">
+    <button data-tab="overview" class="active">Tổng quan</button>
+    <button data-tab="teacher">Giáo viên dùng</button>
+    <button data-tab="score">Chấm thử</button>
+    <button data-tab="learn">Học &amp; vấn đáp</button>
+  </nav>
+  <div class="server" id="serverPill"><span class="dot" id="serverDot"></span><span id="serverLabel">Đang kết nối…</span></div>
+</header>
+
+<main>
+<!-- ================= TỔNG QUAN ================= -->
+<section class="tab-panel active" id="tab-overview">
+  <div class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">speechocean762 · báo cáo tuần 11</p>
+      <h1>Nghe đúng bài.<br><em>Trước khi nghe nhiều bài.</em></h1>
+      <p class="lede">Một công cụ xếp hạng bài đọc tiếng Anh để giáo viên dùng ngân sách nghe lại vào đúng chỗ. Toàn bộ số liệu lấy từ lần chạy thật ngày 27/10/2026, không chỉnh số.</p>
+      <div class="hero-actions">
+        <button class="btn primary" data-go="teacher">Thử chế độ giáo viên <svg class="icon"><use href="#i-arrow"/></svg></button>
+        <button class="btn ghost" data-go="score">Chấm một file audio</button>
+      </div>
+      <div class="hero-chips">
+        <span>2.500 bài test</span><span>250 người nói</span><span>5 giám khảo</span><span>wav2vec 2.0</span>
+      </div>
+    </div>
+    <aside class="hero-card" aria-label="Ba bài cần nghe trước">
+      <div class="mini-head"><span>Ưu tiên nghe hôm nay</span><b>20%</b></div>
+      <div id="heroList" class="mini-list"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+      <p class="mini-foot">Bấm nghe thử. Điểm thật chỉ hiện khi bạn bấm “Lộ điểm thật”.</p>
+    </aside>
+  </div>
+
+  <div class="metric-row">
+    <article class="metric metric-w2v">
+      <span class="metric-label">SVR wav2vec 2.0</span>
+      <strong id="mRecall20">—</strong>
+      <p>Recall@20% trên test</p>
+      <small>Chọn nghe 20% bài, bắt được <b id="mCaught">—</b>/330 bài dưới 6</small>
+    </article>
+    <article class="metric metric-len">
+      <span class="metric-label">Chỉ độ dài câu</span>
+      <strong id="mRecallLen">—</strong>
+      <p>Recall@20% với 2 đặc trưng</p>
+      <small>Phần lớn tín hiệu của log-mel là tốc độ đọc</small>
+    </article>
+    <article class="metric metric-random">
+      <span class="metric-label">Chọn ngẫu nhiên</span>
+      <strong id="mRandom">20%</strong>
+      <p>Mức nền khi không có mô hình</p>
+      <small>Tỷ lệ bài dưới 6 trong test: <b id="mBase">13,2%</b></small>
+    </article>
+    <article class="metric metric-data">
+      <span class="metric-label">Kiểm tra target</span>
+      <strong id="mTarget">—</strong>
+      <p>trung vị làm tròn xuống khớp total</p>
+      <small>5.000/5.000 câu; 330/2.500 bài test dưới 6</small>
+    </article>
+  </div>
+
+  <div class="story-grid">
+    <article class="story-card">
+      <span class="story-no">01</span>
+      <h3>Điểm đúng là trung vị</h3>
+      <p>Mỗi câu có 5 điểm giám khảo. Lấy trung vị rồi làm tròn xuống khớp <b>total</b> trong scores.json ở <b>5.000/5.000</b> câu. Một giám khảo chấm lệch không kéo được điểm của cả câu.</p>
+      <button class="text-link" data-go="learn" data-learn="median">Thử tương tác <svg class="icon"><use href="#i-arrow"/></svg></button>
+    </article>
+    <article class="story-card">
+      <span class="story-no">02</span>
+      <h3>Đo bằng ngân sách nghe lại</h3>
+      <p>Giáo viên chỉ nghe được một phần bài. Vì vậy chỉ số chính là <b>recall@20%</b>: trong 20% bài bị xếp thấp nhất, bắt được bao nhiêu bài thật sự dưới 6.</p>
+      <button class="text-link" data-go="teacher">Xem danh sách ưu tiên <svg class="icon"><use href="#i-arrow"/></svg></button>
+    </article>
+    <article class="story-card">
+      <span class="story-no">03</span>
+      <h3>wav2vec hơn tốc độ đọc</h3>
+      <p>Chỉ độ dài đạt <b>70%</b>; wav2vec 2.0 đạt <b>77%</b> (CV 79,8% ± 10,4). Ở nửa đọc nhanh, wav2vec bắt <b>78%</b> so với <b>50%</b> của chỉ độ dài — nhưng chưa đủ để nói là chẩn đoán từng âm.</p>
+      <button class="text-link" data-go="learn" data-learn="limits">Đọc giới hạn <svg class="icon"><use href="#i-arrow"/></svg></button>
+    </article>
+  </div>
+
+  <section class="block">
+    <div class="block-head">
+      <div>
+        <p class="eyebrow">Bảng kết quả</p>
+        <h2>So sánh các mô hình, CV cạnh test</h2>
+      </div>
+      <p class="block-note">Quyết định dựa trên cột CV (GroupKFold 5 phần theo người nói). Test chỉ chạy một lần để xác nhận.</p>
+    </div>
+    <div class="card table-card">
+      <div class="table-scroll">
+        <table class="data-table" id="modelTable">
+          <thead><tr><th>Mô hình</th><th>Đặc trưng</th><th>Recall@20% CV</th><th>Recall@20% test</th><th>MAE test</th><th>PCC test</th></tr></thead>
+          <tbody id="modelTableBody"><tr><td colspan="6" class="loading-cell">Đang tải số liệu…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-foot"><span>Màu theo loại đặc trưng: log-mel xanh dương · wav2vec cam · chỉ độ dài xanh lá · ngẫu nhiên xám.</span><button class="btn small ghost" id="toggleAllModels">Xem đủ 10 mô hình</button></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-head">
+      <div><p class="eyebrow">Ba hình từ báo cáo</p><h2>Điều gì tạo ra khoảng cách?</h2></div>
+      <p class="block-note">Hình 1 so CV với test; Hình 2 tách nửa đọc nhanh/chậm; Hình 3 cho thấy ngưỡng chia nửa.</p>
+    </div>
+    <div class="figure-grid">
+      <figure class="card figure wide">
+        <a href="/static/figures/fig1_cv_test.png" target="_blank" rel="noopener"><img src="/static/figures/fig1_cv_test.png" alt="So sánh recall@20% CV và test của các mô hình" loading="lazy"></a>
+        <figcaption><b>Hình 1.</b> Recall@20% trên CV và test. wav2vec 2.0 giữ được khoảng cách so với log-mel và chỉ độ dài; CV và test không lệch quá xa.</figcaption>
+      </figure>
+      <figure class="card figure">
+        <a href="/static/figures/fig2_halves.png" target="_blank" rel="noopener"><img src="/static/figures/fig2_halves.png" alt="Recall@20% theo nửa đọc nhanh và chậm" loading="lazy"></a>
+        <figcaption><b>Hình 2.</b> Chia test theo trung vị giây/từ. Nửa đọc nhanh chỉ có 36 bài dưới 6, nên sai số của tỷ lệ này lớn.</figcaption>
+      </figure>
+      <figure class="card figure">
+        <a href="/static/figures/fig3_speed_dist.png" target="_blank" rel="noopener"><img src="/static/figures/fig3_speed_dist.png" alt="Phân bố giây trên từ trên test" loading="lazy"></a>
+        <figcaption><b>Hình 3.</b> Phân bố giây/từ trên test, trung vị 0,578. Nửa chậm chứa 294/330 bài dưới 6.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="insight-band">
+    <div>
+      <p class="eyebrow">Phát hiện chính</p>
+      <h2>Đổi đặc trưng giúp nhiều hơn đổi cách học.</h2>
+      <p>Log-mel gần như chỉ đo tốc độ đọc: hai đặc trưng độ dài đã đạt 70% recall@20%. wav2vec 2.0 thêm 7 điểm phần trăm. Nhưng mô hình vẫn dồn dự đoán về giữa thang và sai nặng ở 12 bài total ≤ 2.</p>
+    </div>
+    <button class="btn light" data-go="learn" data-learn="compression">Xem vì sao dự đoán dồn về giữa <svg class="icon"><use href="#i-arrow"/></svg></button>
+  </section>
+</section>
+
+<!-- ================= GIÁO VIÊN DÙNG ================= -->
+<section class="tab-panel" id="tab-teacher">
+  <div class="section-head">
+    <p class="eyebrow">Chế độ giáo viên</p>
+    <h2>35 bài, nhưng chỉ nghe 7 bài.<br><em>Nghe bài nào trước?</em></h2>
+    <p class="lede">Mô phỏng đúng việc giáo viên làm với 2.500 bài test: chọn ngân sách, xếp hạng theo mô hình, nghe, rồi mới lộ điểm thật để kiểm tra.</p>
+  </div>
+
+  <div class="card control-card">
+    <div class="control-group">
+      <label>Ngân sách nghe lại</label>
+      <div class="segmented" id="budgetSeg" role="group">
+        <button data-budget="0.1">10%</button><button data-budget="0.2" class="active">20%</button><button data-budget="0.3">30%</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="teacherModel">Mô hình xếp hạng</label>
+      <select id="teacherModel"></select>
+    </div>
+    <div class="control-group grow">
+      <label for="teacherSearch">Tìm mã bài hoặc câu đọc</label>
+      <input id="teacherSearch" type="search" placeholder="VD: 014040089 hoặc HERE IS">
+    </div>
+    <button class="btn ghost small" id="downloadCsv"><svg class="icon"><use href="#i-download"/></svg> Tải danh sách</button>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card"><span>Số bài phải nghe</span><strong id="budgetCount">—</strong><small>trong 2.500 bài test</small></div>
+    <div class="summary-card accent"><span>Bắt được bài dưới 6</span><strong id="recallValue">—</strong><small id="recallFrac">—</small></div>
+    <div class="summary-card"><span>Precision</span><strong id="precisionValue">—</strong><small id="precisionText">—</small></div>
+    <div class="summary-card"><span>So với nghe ngẫu nhiên</span><strong id="randomCompare">—</strong><small id="randomText">—</small></div>
+  </div>
+  <div class="note-strip" id="teacherNote">Đang tính…</div>
+
+  <div class="card table-card">
+    <div class="table-head">
+      <div><h3>Danh sách ưu tiên</h3><span id="tableMeta">—</span></div>
+      <div class="legend-inline"><span class="badge high">ưu tiên cao</span><span class="badge low">dưới 6</span></div>
+    </div>
+    <div class="table-scroll">
+      <table class="data-table teacher-table">
+        <thead><tr><th>#</th><th>Bài đọc</th><th>Người nói</th><th>Dự đoán</th><th>Điểm thật</th><th></th></tr></thead>
+        <tbody id="teacherBody"><tr><td colspan="6" class="loading-cell">Đang xếp hạng…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="table-foot">
+      <span id="tableFootNote">Bấm nghe để mở trình phát; điểm thật bị ẩn cho tới khi bạn lộ.</span>
+      <button class="btn small ghost" id="loadMoreBtn">Xem thêm</button>
+    </div>
+  </div>
+
+  <div class="split-note">
+    <div class="split-note-icon"><svg class="icon"><use href="#i-alert"/></svg></div>
+    <div>
+      <b>Đọc đúng con số:</b> ở ngân sách 20%, mô hình bắt 253/330 bài dưới 6, tức 77%; precision 51%. Vẫn còn 77 bài dưới 6 lọt ra ngoài danh sách. 10% và 20% là hai mức có trong báo cáo; 30% được tính thêm từ cùng bộ dự đoán đã lưu.
+    </div>
+  </div>
+</section>
+
+<!-- ================= CHẤM THỬ ================= -->
+<section class="tab-panel" id="tab-score">
+  <div class="section-head">
+    <p class="eyebrow">Chấm thử</p>
+    <h2>Đưa một bài đọc vào.<br><em>Nhận mức ưu tiên nghe lại.</em></h2>
+    <p class="lede">Model demo huấn luyện lại đúng split train của báo cáo (125 người nói). Đây là công cụ xếp hạng để nghe lại, không phải điểm chấm chính thức.</p>
+    <button type="button" class="group-jump" id="jumpGroup"><svg class="icon"><use href="#i-mic"/></svg> Chấm tay cho nhóm: đọc nhanh / chậm &amp; chỗ ngắt sai ↓</button>
+  </div>
+
+  <div class="score-layout">
+    <div class="card upload-card">
+      <h3>1. Chọn bài đọc</h3>
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Chọn file audio">
+        <input type="file" id="fileInput" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm" hidden>
+        <svg class="icon big"><use href="#i-upload"/></svg>
+        <strong>Kéo file audio vào đây</strong>
+        <span>hoặc bấm để chọn · WAV, MP3, M4A · tối đa 25 MB / 30 giây</span>
+      </div>
+      <div class="record-row">
+        <button class="btn ghost small" id="recordBtn"><svg class="icon"><use href="#i-mic"/></svg> Ghi âm trực tiếp</button>
+        <button class="btn danger small hidden" id="stopBtn">Dừng ghi</button>
+        <span class="record-timer hidden" id="recordTimer">00:00</span>
+        <span class="record-state" id="recordState"></span>
+      </div>
+      <label class="field-label" for="transcript">2. Câu đọc <span>không bắt buộc — chỉ để tính giây/từ</span></label>
+      <input class="text-input" id="transcript" maxlength="300" placeholder="VD: HERE IS TIM'S CAP">
+      <button class="btn primary wide" id="scoreBtn"><svg class="icon"><use href="#i-wave"/></svg> Chấm bài này</button>
+      <div class="sample-block">
+        <span>Không có file? Dùng câu mẫu có sẵn:</span>
+        <div class="sample-buttons">
+          <button class="chip-btn" data-sample="caught">Bài bị bắt đúng</button>
+          <button class="chip-btn" data-sample="missed">Bài đoán sai nặng</button>
+          <button class="chip-btn" data-sample="high">Bài điểm cao</button>
+        </div>
+      </div>
+      <p class="privacy-note"><svg class="icon"><use href="#i-check"/></svg> Audio chỉ được xử lý trên máy này. Không gửi lên mạng.</p>
+    </div>
+
+    <div class="card result-card" id="resultCard">
+      <div class="empty-state" id="scoreEmpty">
+        <div class="empty-orbit"><svg class="icon big"><use href="#i-wave"/></svg></div>
+        <h3>Chưa có bài nào</h3>
+        <p>Chọn file, ghi âm hoặc dùng một câu mẫu. Kết quả sẽ hiện ở đây kèm mức ưu tiên so với 2.500 bài test.</p>
+        <div class="empty-facts"><span>wav2vec 2.0</span><span>log-mel</span><span>chỉ độ dài</span></div>
+      </div>
+      <div id="scoreResult" class="hidden"></div>
+    </div>
+  </div>
+
+  <div class="card group-card" id="groupCard">
+    <div class="group-head">
+      <div>
+        <p class="eyebrow">Chấm tay cho nhóm</p>
+        <h3>Phiếu chấm tốc độ đọc &amp; chỗ ngắt sai</h3>
+        <p class="group-lede">Chấm một bài ở trên, nghe lại, rồi chọn <b>Nhanh / Vừa / Chậm</b> và đánh dấu từng chỗ ngắt <b>Đúng / Sai</b>. App chỉ đo thời gian và tìm khoảng lặng — không tự kết luận phát âm.</p>
+      </div>
+      <div class="group-side">
+        <span class="group-badge" id="groupAutoSpeed">Chưa chấm bài</span>
+        <button class="btn ghost small hidden" id="gPlayAll"><svg class="icon"><use href="#i-play"/></svg><span>Nghe cả bài</span></button>
+      </div>
+    </div>
+    <div class="group-empty" id="groupEmpty">
+      <svg class="icon big"><use href="#i-wave"/></svg>
+      <div>
+        <strong>Chấm một bài để mở phiếu</strong>
+        <p>Kéo file, ghi âm hoặc chọn câu mẫu ở trên rồi bấm “Chấm bài này”. Phiếu sẽ tự điền tốc độ đo được và các khoảng ngắt để cả nhóm nghe lại, chấm Nhanh / Vừa / Chậm và đánh dấu chỗ ngắt sai.</p>
+      </div>
+    </div>
+    <div class="group-grid hidden" id="groupBody">
+      <div>
+        <div class="group-names">
+          <div>
+            <label class="field-label" for="gReader">Người đọc</label>
+            <input class="text-input" id="gReader" maxlength="40" placeholder="Tên bạn đọc">
+          </div>
+          <div>
+            <label class="field-label" for="gEvaluator">Người chấm</label>
+            <input class="text-input" id="gEvaluator" maxlength="40" placeholder="Tên người nghe">
+          </div>
+        </div>
+        <div class="group-field">
+          <span class="field-label">Tốc độ đọc <span id="gSpeedHint">app đo để tham khảo</span></span>
+          <div class="seg" id="gSpeed">
+            <button data-speed="nhanh">Nhanh</button>
+            <button data-speed="vừa" class="active">Vừa</button>
+            <button data-speed="chậm">Chậm</button>
+          </div>
+        </div>
+        <label class="field-label" for="gNote">Ghi chú chỗ ngắt sai <span>ngắt giữa cụm, âm cần sửa…</span></label>
+        <textarea class="text-input group-note" id="gNote" maxlength="400" placeholder="VD: ngắt sai giữa “take it over”; đọc nhanh ở cuối câu…"></textarea>
+        <div class="group-actions">
+          <button class="btn primary" id="gSave"><svg class="icon"><use href="#i-check"/></svg> Lưu phiếu</button>
+          <button class="btn ghost" id="gReset">Xoá form</button>
+        </div>
+      </div>
+      <div>
+        <div class="group-subhead"><span>Khoảng ngắt app đo được — đánh dấu chỗ sai</span><span id="gPauseCount"></span></div>
+        <div id="gPauseList" class="pause-list"></div>
+        <p class="group-tip">Mỗi dòng là một khoảng lặng ≥ 0,25 giây. Bấm ▶ để nghe đúng đoạn đó, rồi đánh dấu Đúng/Sai. “Sai” nghĩa là chỗ ngắt làm câu vỡ nghĩa hoặc ngắt giữa cụm.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card group-saved-card" id="groupSavedCard">
+    <div class="group-subhead">
+      <span>Phiếu chấm nhóm đã lưu</span>
+      <span id="gSavedCount">0 phiếu</span>
+    </div>
+    <div id="gSavedList" class="saved-list"></div>
+    <div class="group-actions">
+      <button class="btn ghost small" id="gExport"><svg class="icon"><use href="#i-download"/></svg> Xuất CSV</button>
+      <button class="btn ghost small" id="gClearAll">Xoá tất cả phiếu</button>
+    </div>
+  </div>
+
+  <div class="score-explain">
+    <article><span class="mini-no">01</span><b>Điểm dự đoán</b><p>Model hồi quy SVR trên embedding wav2vec 2.0, thang 0–10. Model dồn điểm về giữa thang, nên đừng đọc con số như điểm tuyệt đối.</p></article>
+    <article><span class="mini-no">02</span><b>Mức ưu tiên</b><p>So điểm dự đoán với phân bố 2.500 bài test. Nằm trong 20% thấp nhất là “ưu tiên cao” — đúng ngân sách nghe của giáo viên.</p></article>
+    <article><span class="mini-no">03</span><b>Xác suất dưới 6</b><p>Lấy từ mô hình phân loại LR cân bằng lớp trên wav2vec. Chỉ là tín hiệu phụ, không thay thế việc nghe.</p></article>
+  </div>
+</section>
+
+<!-- ================= HỌC & VẤN ĐÁP ================= -->
+<section class="tab-panel" id="tab-learn">
+  <div class="section-head">
+    <p class="eyebrow">Học &amp; vấn đáp</p>
+    <h2>Hiểu đủ để tự trả lời.<br><em>Không cần học thuộc.</em></h2>
+    <p class="lede">Ba câu thầy sẽ hỏi, ba phép thử tương tác, và phần nghe 5 câu sai nặng nhất. Mỗi con số đều lấy từ kết quả tuần 11.</p>
+  </div>
+
+  <div class="learn-nav" id="learnNav">
+    <button data-learn="qa" class="active">Câu hỏi thầy</button>
+    <button data-learn="median">Trung vị</button>
+    <button data-learn="compression">Dồn về giữa</button>
+    <button data-learn="budget">Recall</button>
+    <button data-learn="worst5">5 câu worst5</button>
+    <button data-learn="script">Kịch bản demo</button>
+    <button data-learn="limits">Giới hạn</button>
+  </div>
+
+  <section class="learn-section" id="learn-qa">
+    <div class="block-head"><div><p class="eyebrow">Phần vấn đáp</p><h2>Ba câu thầy đã nêu</h2></div><button class="btn small ghost" id="randomQuestion">Mở câu ngẫu nhiên</button></div>
+    <div class="qa-list" id="qaList">
+      <details class="qa" data-q="median">
+        <summary><span class="qa-no">01</span><span>Vì sao trung vị bền hơn trung bình khi một giám khảo chấm lệch?</span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+        <div class="qa-answer">
+          <p>Trung bình cộng kéo theo độ lớn của điểm lệch; trung vị chỉ quan tâm vị trí giữa. Trong 5.000 câu có <b>448 câu</b> mà một giám khảo lệch ≥ 3 điểm so với bốn người còn lại. Ở nhóm đó, |trung bình − trung vị| là <b>0,59</b> điểm, còn toàn bộ dữ liệu chỉ <b>0,27</b>.</p>
+          <div class="example-box"><div><span>Ví dụ thật</span><b>015010033</b></div><div class="five-dots" data-five="8.3,8.0,10.0,5.0,2.27"></div><p>Năm điểm: 8,3 · 8,0 · 10,0 · 5,0 · 2,27. Trung bình <b>6,71</b>; trung vị <b>8,0</b>; total trong scores.json là <b>8</b>.</p></div>
+          <p><b>Nói ngắn:</b> một giám khảo cho 2,27 không thể kéo điểm của câu xuống 6,7 nếu bốn người còn lại đều 8–10. Trung vị giữ được điểm “đồng thuận”, đúng với nhãn total.</p>
+          <button class="text-link" data-learn="median">Thử kéo điểm từng giám khảo <svg class="icon"><use href="#i-arrow"/></svg></button>
+        </div>
+      </details>
+      <details class="qa" data-q="compression">
+        <summary><span class="qa-no">02</span><span>Vì sao hồi quy với đặc trưng yếu lại kéo dự đoán về giữa thang?</span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+        <div class="qa-answer">
+          <p>Khi tín hiệu không đủ để phân biệt bài tốt/xấu, cách giảm sai số bình phương tốt nhất là đoán gần giá trị trung bình của tập train. Vì vậy dự đoán bị nén: các bài điểm thật 0–2 thường được đoán quanh 7; bài điểm cao cũng khó vượt 9,2.</p>
+          <p>Ở nhóm <b>12 bài test có total ≤ 2</b>, cả ba mô hình đều đoán trung bình <b>6,94–7,00</b>; 12/12 bài bị đoán trên 5 điểm. Đây là lý do phải nghe 5 câu worst5 và không được coi điểm mô hình là điểm thật.</p>
+          <button class="text-link" data-learn="compression">Xem biểu đồ nén dự đoán <svg class="icon"><use href="#i-arrow"/></svg></button>
+        </div>
+      </details>
+      <details class="qa" data-q="budget">
+        <summary><span class="qa-no">03</span><span>Nếu giáo viên chỉ nghe 10% số bài, con số nào cho biết công cụ có đáng dùng?</span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+        <div class="qa-answer">
+          <p><b>Recall@10%</b> của wav2vec 2.0 là <b>52%</b>, precision@10% là <b>68%</b>; chọn ngẫu nhiên chỉ được khoảng 10%. Nếu nghe 20%, recall lên <b>77%</b> và precision <b>51%</b>.</p>
+          <p>Cần nói cả phần mất: nghe 20% vẫn bỏ sót <b>77/330</b> bài dưới 6. Công cụ đáng dùng để <b>xếp thứ tự</b> việc nghe, không phải để thay giáo viên.</p>
+          <button class="text-link" data-learn="budget">Tự kéo ngân sách và xem recall <svg class="icon"><use href="#i-arrow"/></svg></button>
+        </div>
+      </details>
+      <details class="qa" data-q="w2v">
+        <summary><span class="qa-no">04</span><span>wav2vec 2.0 hơn chỉ-độ-dài 7 điểm phần trăm nhờ đâu?</span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+        <div class="qa-answer">
+          <p>Không phải chỉ nhờ tốc độ. Trên CV, chỉ-độ-dài đạt <b>72,7%</b> ± 12,9; wav2vec đạt <b>79,8%</b> ± 10,4; thêm hai đặc trưng độ dài vào wav2vec gần như không đổi (79,8%). Trên test, khoảng cách là 77% so với 70%.</p>
+          <p>Phép kiểm nửa đọc: ở nửa nhanh, wav2vec <b>78%</b> so với chỉ-độ-dài <b>50%</b>; ở nửa chậm, <b>58%</b> so với <b>54%</b>. Nhưng nửa nhanh chỉ có 36 bài dưới 6, nên đây là bằng chứng có điều kiện, không phải chẩn đoán từng âm.</p>
+        </div>
+      </details>
+      <details class="qa" data-q="lowtotal">
+        <summary><span class="qa-no">05</span><span>12 bài total ≤ 2 nói gì về giới hạn của mô hình?</span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+        <div class="qa-answer">
+          <p>Cả 12 bài đều có total rất thấp nhưng ba mô hình đoán trung bình quanh <b>7</b> (MAE khoảng 6,4). Mô hình dựa trên tốc độ coi đây là bài đọc bình thường. Có thể total 0 vì phát âm rất kém, đọc sai câu, im lặng hoặc vấn đề thu âm — <b>chỉ nghe mới biết</b>.</p>
+          <p>Vì vậy nhóm phải tự nghe 5 câu và ghi lại hiện tượng, không suy đoán từ điểm số.</p>
+          <button class="text-link" data-learn="worst5">Mở phần nghe 5 câu <svg class="icon"><use href="#i-arrow"/></svg></button>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="learn-section" id="learn-median">
+    <div class="block-head"><div><p class="eyebrow">Tương tác 01</p><h2>Trung vị vs trung bình</h2></div><p class="block-note">Kéo điểm của từng giám khảo. Xem total thay đổi thế nào.</p></div>
+    <div class="card median-card">
+      <div class="median-controls" id="medianSliders"></div>
+      <div class="median-visual">
+        <div class="scale" id="medianScale"></div>
+        <div class="median-results">
+          <div><span>Trung bình</span><strong id="meanOut">—</strong></div>
+          <div><span>Trung vị</span><strong id="medianOut">—</strong></div>
+          <div class="accent"><span>floor(trung vị) = total</span><strong id="floorOut">—</strong></div>
+        </div>
+        <p class="median-note" id="medianNote">—</p>
+      </div>
+      <div class="preset-row">
+        <span>Thử nhanh:</span>
+        <button class="chip-btn" data-preset="outlier">Một giám khảo lệch</button>
+        <button class="chip-btn" data-preset="agree">Năm người đồng ý</button>
+        <button class="chip-btn" data-preset="zero">Cả năm chấm 0</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="learn-section" id="learn-compression">
+    <div class="block-head"><div><p class="eyebrow">Tương tác 02</p><h2>Vì sao dự đoán dồn về giữa?</h2></div><p class="block-note">Mỗi chấm là một bài test. Trục ngang: điểm dự đoán. Trục dọc: điểm thật.</p></div>
+    <div class="card chart-card">
+      <div class="chart-toolbar">
+        <div class="segmented" id="compressionModelSeg"><button data-model="SVR wav2vec 2.0" class="active">wav2vec</button><button data-model="SVR log-mel">log-mel</button><button data-model="SVR chỉ độ dài">chỉ độ dài</button></div>
+        <div class="chart-stats" id="compressionStats">—</div>
+      </div>
+      <div class="chart-wrap"><canvas id="compressionChart"></canvas></div>
+      <p class="chart-caption">Đường chéo là dự đoán hoàn hảo. Các điểm xếp thành dải dọc cho thấy mô hình không dám đoán quá thấp hoặc quá cao. Chấm cam là bài thật sự dưới 6.</p>
+    </div>
+  </section>
+
+  <section class="learn-section" id="learn-budget">
+    <div class="block-head"><div><p class="eyebrow">Tương tác 03</p><h2>Recall thay đổi theo ngân sách</h2></div><p class="block-note">Tính trực tiếp từ 2.500 dự đoán đã lưu. Đường đứt là mức ngẫu nhiên.</p></div>
+    <div class="card chart-card">
+      <div class="chart-toolbar">
+        <div class="budget-readout">Ngân sách đang xem: <b id="budgetReadout">20%</b></div>
+        <input type="range" id="budgetRange" min="5" max="40" step="5" value="20" aria-label="Ngân sách nghe lại">
+      </div>
+      <div class="chart-wrap"><canvas id="recallChart"></canvas></div>
+      <div class="recall-table" id="recallTable"></div>
+    </div>
+  </section>
+
+  <section class="learn-section" id="learn-worst5">
+    <div class="block-head"><div><p class="eyebrow">Bài tập còn lại</p><h2>Nghe 5 câu sai nặng nhất</h2></div><p class="block-note">Cả 5 câu có total 0 nhưng mô hình đoán khoảng 7. Nhóm cần tự nghe và ghi lại — không bịa nội dung.</p></div>
+    <div class="worst5-grid" id="worst5Cards"></div>
+    <div class="card notes-card">
+      <div class="notes-head"><div><h3>Phiếu nghe của nhóm</h3><p>Ghi riêng hai người nghe. Nội dung được lưu trong trình duyệt này; bấm xuất để mang đi.</p></div><div class="notes-actions"><button class="btn small ghost" id="exportNotes"><svg class="icon"><use href="#i-download"/></svg> Xuất ghi chú</button><button class="btn small ghost" id="clearNotes">Xóa</button></div></div>
+      <div id="notesList" class="notes-list"></div>
+    </div>
+  </section>
+
+  <section class="learn-section" id="learn-script">
+    <div class="block-head"><div><p class="eyebrow">Trước buổi gặp</p><h2>Kịch bản demo 5 phút</h2></div><p class="block-note">Bấm từng bước để nhảy đúng chỗ. Không cần slide.</p></div>
+    <div class="script-grid">
+      <article class="script-step card" data-go="overview"><span>1 · 1 phút</span><h3>Mở bằng con số</h3><p>Nghe 20% bài: wav2vec bắt 77% bài dưới 6, chỉ độ dài 70%, ngẫu nhiên 20%. Nhấn mạnh: target là trung vị, khớp 5.000/5.000.</p></article>
+      <article class="script-step card" data-go="teacher"><span>2 · 2 phút</span><h3>Cho thầy bấm thử</h3><p>Chọn 20%, mở 2–3 bài đầu, bấm nghe rồi “Lộ điểm thật”. Chỉ ra 253/330 bài bắt được và 77 bài vẫn lọt.</p></article>
+      <article class="script-step card" data-go="score" data-sample-go="caught"><span>3 · 1 phút</span><h3>Chấm một câu mẫu</h3><p>Chạy “Bài bị bắt đúng”, rồi “Bài đoán sai nặng”. Câu thứ hai cho thấy giới hạn: total 0 nhưng mô hình đoán 7,2.</p></article>
+      <article class="script-step card" data-go="learn"><span>4 · 1 phút</span><h3>Ba câu vấn đáp</h3><p>Trung vị bền vì bỏ qua độ lớn điểm lệch; dự đoán dồn về giữa vì đặc trưng yếu; recall@10% cho biết công cụ có đáng dùng.</p></article>
+      <article class="script-step card" data-go="learn" data-learn="worst5"><span>5 · 30 giây</span><h3>Nói thẳng phần còn thiếu</h3><p>5 câu worst5 và ghi chú nghe là việc nhóm còn phải làm. Không che giấu; đây là phần thầy sẽ hỏi.</p></article>
+    </div>
+  </section>
+
+  <section class="learn-section" id="learn-limits">
+    <div class="block-head"><div><p class="eyebrow">Trung thực</p><h2>Giới hạn cần nói ra</h2></div></div>
+    <div class="limits-grid">
+      <article class="limit-card"><h3>Dữ liệu hẹp</h3><p>250 người nói tiếng mẹ đẻ Quan Thoại, một nửa là trẻ em; bài đọc thành tiếng, không phải hội thoại tự do. Không đại diện cho mọi người học.</p></article>
+      <article class="limit-card"><h3>Chỉ mức câu</h3><p>Không chẩn đoán từng âm, không sinh bài luyện. Muốn chỉ ra lỗi phát âm cụ thể cần đặc trưng gắn với âm như GOP.</p></article>
+      <article class="limit-card"><h3>Điểm bị nén</h3><p>Dự đoán không trải hết 0–10; bài rất kém vẫn có thể được đoán quanh 7. Vì vậy dùng để xếp thứ tự nghe, không dùng làm điểm chính thức.</p></article>
+      <article class="limit-card"><h3>Khoảng cách CV–test</h3><p>CV recall@20% 79,8% ± 10,4; test 77%. Chênh lệch nhỏ nhưng CV có độ lệch chuẩn lớn; test chỉ chạy một lần.</p></article>
+      <article class="limit-card"><h3>12 bài total ≤ 2</h3><p>Cả 12 bài đều bị đoán quanh 7. Có thể do đọc sai câu, im lặng, tiếng ồn hoặc lỗi thu âm — chưa nghe thì chưa kết luận.</p></article>
+      <article class="limit-card"><h3>Không thay giáo viên</h3><p>Công cụ trả lời “nghe bài nào trước”, không trả lời “bài này mấy điểm”. Giáo viên vẫn là người quyết định.</p></article>
+    </div>
+  </section>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div><b>MLA · Nhóm 05</b><span>61FIT4MLA · thầy Khánh · báo cáo tuần 11</span></div>
+  <div class="footer-links">
+    <a href="https://www.openslr.org/101/" target="_blank" rel="noopener">speechocean762 (OpenSLR 101)</a>
+    <a href="https://huggingface.co/facebook/wav2vec2-base" target="_blank" rel="noopener">wav2vec2-base</a>
+    <span>Demo local · không gửi audio lên mạng</span>
+  </div>
+</footer>
+
+<div class="player hidden" id="player" role="region" aria-label="Trình phát audio">
+  <audio id="playerAudio" preload="metadata"></audio>
+  <button class="icon-btn player-toggle" id="playerToggle" aria-label="Phát hoặc tạm dừng"><svg class="icon"><use href="#i-play"/></svg></button>
+  <div class="player-meta"><strong id="playerTitle">—</strong><span id="playerSub">—</span></div>
+  <div class="player-track" id="playerTrack" role="slider" aria-label="Tiến trình" tabindex="0"><div class="player-fill" id="playerFill"></div></div>
+  <span class="player-time" id="playerTime">0:00</span>
+  <button class="btn small player-reveal" id="playerReveal">Lộ điểm thật</button>
+  <button class="icon-btn" id="playerClose" aria-label="Đóng trình phát"><svg class="icon"><use href="#i-close"/></svg></button>
+</div>
+<div class="toast hidden" id="toast" role="status"></div>
+
+<script src="/static/vendor/chart.umd.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
