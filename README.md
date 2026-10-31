@@ -6,11 +6,14 @@ Demo và tài liệu môn MLA — Nhóm 05, 61FIT4MLA.
 - `docs/` — báo cáo, nhận xét và dữ liệu làm việc các tuần.
 - [HUONG_DAN_AI.md](HUONG_DAN_AI.md) — context pack để dán sang chat khác: bản đồ file, số liệu gốc, cách đọc dữ liệu và bộ câu hỏi vấn đáp.
 
-Chạy demo:
+## Chạy demo
 
-```bash
-cd webapp
-./start.sh
+macOS: mở Terminal trong `webapp` rồi chạy `./start.sh`, hoặc bấm đúp `start.command`.
+
+Windows: bấm đúp `webapp\start.bat`, hoặc mở PowerShell trong `webapp`:
+
+```powershell
+.venv\Scripts\python -m uvicorn app:app --host 127.0.0.1 --port 8000
 ```
 
-Mở `http://127.0.0.1:8000`, dừng bằng `Ctrl+C`.
+Mở `http://127.0.0.1:8000`, dừng bằng `Ctrl+C`. Lần đầu cài môi trường, xem [webapp/README.md](webapp/README.md).

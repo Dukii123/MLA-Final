@@ -39,7 +39,7 @@ Dự án dự đoán điểm phát âm mức câu trên bộ **speechocean762** 
 
 - **Nghe 5 câu worst5**: mỗi câu cần ít nhất 2 người nghe độc lập, ghi lại thực tế nghe được. Đây là việc thầy sẽ hỏi. Hiện `listening_notes.json` vẫn là chữ giả ("Ghi chu thu mot hai ba..."), không được dùng.
 - Bản cuối 4,4 MB trên Windows phải mở kiểm cột Nghe 1/2 trước khi nộp; nếu vẫn là chữ giả thì chưa dùng được.
-- `webapp/` và `docs/` chưa được commit; git đang hiện nhiều file là "deleted" do lần di chuyển thư mục.
+- Đã commit ngày 31/10: docs, webapp, guide, `.gitignore` (commit `3244979`), sau đó bổ sung hướng dẫn Windows và `start.bat`. Các file nặng (`.venv`, WAVE, trọng số wav2vec, uploads) bị gitignore và vẫn nằm trên máy.
 
 **Đã dọn ngày 31/10:** xoá file nén dataset 520 MB (đã đối chiếu đủ 5.245 WAV), xoá bản WAVE tuần 9 trùng 622 MB, xoá `test_notes.docx` chứa ghi chú giả, xoá `.DS_Store`/`__pycache__`. Repo còn khoảng: `docs` 127 MB, `webapp` 1,7 GB (venv 688 MB + data 670 MB + models 377 MB).
 
@@ -48,7 +48,7 @@ Dự án dự đoán điểm phát âm mức câu trên bộ **speechocean762** 
 | Đường dẫn | Nội dung |
 |---|---|
 | `webapp/README.md` | Hướng dẫn chạy app, giới hạn, cấu trúc |
-| `webapp/start.sh`, `start.command` | Khởi động uvicorn localhost:8000 |
+| `webapp/start.sh`, `start.command`, `start.bat` | Khởi động uvicorn localhost:8000 |
 | `webapp/app.py` | FastAPI, API chấm và file audio |
 | `webapp/ml.py` | Trích đặc trưng, chấm một file, đo tốc độ/khoảng lặng |
 | `webapp/prepare_data.py` | Sinh JSON/hình từ kết quả tuần 11 |
@@ -235,14 +235,20 @@ Lưu ý: `webapp/data/results.json` và `docs/report/week11_work/week11_results.
 
 ## 6. Web app
 
-Chạy:
+Chạy trên macOS:
 
 ```bash
 cd /Users/chiseled/Documents/Github/MLA-Final/webapp
 ./start.sh
 ```
 
-Mở `http://127.0.0.1:8000`. Dừng bằng `Ctrl+C`. Lần đầu nạp wav2vec mất 30–60 giây. App chạy **offline** sau khi cài đủ môi trường; audio không rời máy.
+Trên Windows, mở PowerShell trong `webapp`:
+
+```powershell
+.venv\Scripts\python -m uvicorn app:app --host 127.0.0.1 --port 8000
+```
+
+Hoặc bấm đúp `start.bat`. Mở `http://127.0.0.1:8000`. Dừng bằng `Ctrl+C`. Lần đầu nạp wav2vec mất 30–60 giây. App chạy **offline** sau khi cài đủ môi trường; audio không rời máy.
 
 Bốn tab:
 
@@ -338,8 +344,8 @@ Cùng cấu hình và đặc trưng, nhưng model demo được export ngày 31/
 1. Hai người nghe 5 câu worst5 bằng `listen_kit/worst5_nghe_nhanh.wav` hoặc 5 file trong `worst5/`, ghi độc lập vào `PHIEU_NGHE.md`.
 2. Điền `listening_notes.json`, dựng lại báo cáo bằng `build_report.py`, nhúng gói minh chứng, kiểm tra lại 7 trang.
 3. Mở bản cuối trên Windows, kiểm cột Nghe 1/2 và tên file `Group05_Week11_Report.docx`.
-4. Nếu nộp qua git: commit hoặc thêm `.gitignore` cho `webapp/` và `docs/`; hiện chúng untracked và repo đang hiện nhiều file "deleted" do di chuyển.
-5. Nếu cần dựng lại môi trường trên máy khác: `python3 -m venv .venv`, `.venv/bin/pip install -r requirements.txt`, cần Python 3.12 và ffmpeg.
+4. README và `start.bat` đã có hướng dẫn Windows (đã commit ngày 31/10).
+5. Dựng lại môi trường: macOS dùng `python3.12 -m venv .venv` rồi `.venv/bin/pip install -r requirements.txt`; Windows dùng `py -3.12 -m venv .venv` rồi `.venv\Scripts\python -m pip install -r requirements.txt`. Cần Python 3.12 và ffmpeg.
 
 ---
 

@@ -4,27 +4,47 @@ Web UI chạy **local** để trình bày và dạy lại kết quả tuần 11:
 
 Toàn bộ số liệu lấy từ lần chạy thật ngày 27/10/2026 trong `docs/report/week11_work`. Không có số nào được chỉnh cho đẹp.
 
-## Chạy nhanh (macOS)
+## Chạy nhanh
 
-Bấm đúp `start.command` trong Finder, hoặc mở Terminal:
+Cần **Python 3.12**. `ffmpeg` chỉ cần khi upload MP3/M4A: `brew install ffmpeg` trên macOS, `winget install Gyan.FFmpeg` trên Windows.
+
+### macOS
+
+Lần đầu, mở Terminal trong thư mục `webapp`:
 
 ```bash
-cd webapp
+python3.12 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+Chạy:
+
+```bash
 ./start.sh
 ```
 
-Trình duyệt tự mở `http://127.0.0.1:8000`. Dừng bằng `Ctrl+C`.
+Hoặc bấm đúp `start.command`.
+
+### Windows
+
+Lần đầu, mở PowerShell trong thư mục `webapp`:
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+```
+
+Chạy:
+
+```powershell
+.venv\Scripts\python -m uvicorn app:app --host 127.0.0.1 --port 8000
+```
+
+Hoặc bấm đúp `start.bat`. Nếu máy không có lệnh `py`, thay bằng `python`. Nếu thư mục được copy từ macOS, xoá `.venv` cũ trước khi tạo lại.
+
+Mở `http://127.0.0.1:8000`. Dừng bằng `Ctrl+C`.
 
 Lần đầu nạp wav2vec có thể mất 30–60 giây; góc phải hiện “Đang nạp wav2vec…” rồi chuyển “Sẵn sàng · dữ liệu cục bộ”. Trọng số `facebook/wav2vec2-base` (363 MB) đã nằm trong `models/wav2vec2-base/`, nên demo chạy **offline**; chỉ cần mạng khi cài lại `requirements.txt`.
-
-Nếu chuyển sang máy khác, tạo lại môi trường (cần Python 3.12 và ffmpeg):
-
-```bash
-cd webapp
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-./start.sh
-```
 
 ## Dữ liệu không nằm trong git
 
@@ -62,7 +82,7 @@ Các JSON nhỏ, ảnh và 4 model `.joblib` vẫn có trong git.
 
 ```
 webapp/
-  start.sh, start.command   # chạy demo
+  start.sh, start.command, start.bat   # chạy demo
   requirements.txt
   app.py                    # FastAPI: API + file audio
   ml.py                     # trích đặc trưng, chấm một file
@@ -72,7 +92,7 @@ webapp/
     utterances.json         # 2.500 bài test
     results.json, meta.json # số liệu tuần 11
     test_predictions_week11.csv
-    speechocean762/WAVE     # đủ 5.000 file WAV (667 MB)
+    speechocean762/WAVE     # đủ 5.245 file WAV (667 MB)
     worst5/                 # 5 câu sai nặng
     uploads/                # audio tải lên gần nhất, để nghe lại khoảng ngắt
   models/                   # 4 model .joblib + meta
