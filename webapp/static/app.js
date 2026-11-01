@@ -570,6 +570,11 @@ function bindPlayer() {
   audio.addEventListener('play', syncIcon);
   audio.addEventListener('pause', syncIcon);
 
+  audio.addEventListener('error', () => {
+    syncIcon();
+    toast('Không tải được audio này. Thử lại sau vài giây — server có thể đang nạp, hoặc bạn vừa rời mạng cục bộ.');
+  });
+
   audio.addEventListener('timeupdate', () => {
     const d = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
     const p = d ? Math.min(100, (audio.currentTime / d) * 100) : 0;
@@ -634,7 +639,10 @@ function openPlayer(item, mode = 'test') {
   $('#playerTime').textContent = '0:00';
   $('#playerFill').style.width = '0%';
   $('#player').classList.remove('hidden');
-  audio.play().catch(() => { /* trình duyệt chặn autoplay: người dùng bấm nút phát */ });
+  audio.play().catch((e) => {
+    if (e && e.name === 'NotAllowedError') return; // chặn autoplay: người dùng sẽ bấm nút phát
+    toast('Không phát được audio này. Thử bấm nút phát ở thanh dưới hoặc chờ vài giây rồi bấm lại.');
+  });
 }
 
 function clock(sec) {
