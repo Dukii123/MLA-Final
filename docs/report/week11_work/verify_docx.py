@@ -20,7 +20,10 @@ for t in D.tables:
 full = '\n'.join(all_text)
 
 # 1) Cấu trúc chung
-assert '[[OBJECTS]]' in full, 'thiếu đoạn [[OBJECTS]] ở phụ lục'
+import zipfile as _zf
+_has_ole = any('/embeddings/' in n for n in _zf.ZipFile(str(docx_path)).namelist())
+assert ('[[OBJECTS]]' in full) != _has_ole, \
+    ('[[OBJECTS]] phải có khi chưa nhúng, phải biến mất khi đã nhúng OLE', _has_ole)
 assert 'Group05_Week11_Report' in full, 'thiếu tên file Week11'
 assert 'Week09' not in full, 'còn nhãn Week09 trong báo cáo'
 assert 'Ghi chu thu' not in full, 'còn chữ giả của ghi chú nghe trong báo cáo'

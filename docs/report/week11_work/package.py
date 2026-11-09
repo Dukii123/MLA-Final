@@ -22,14 +22,20 @@ NỘI DUNG
    - thí nghiệm phụ: LR cân bằng lớp trên embedding wav2vec 2.0.
    Đầu ra: week11_results.json, week11_run.log, test_predictions_week11.csv,
    speaker_errors_test.csv, worst5/*.WAV (audio 5 câu sai nặng nhất).
-2. make_figure_week11.py: vẽ fig1_cv_test.png (lollipop CV so với test), fig2_halves.png
-   (cột ghép theo nửa tốc độ), fig3_speed_dist.png (phân bố giây/từ); đầu ra figure_run.log,
-   figure_stats.json.
-3. terminal_week11_run_win.png: ảnh chụp thật cửa sổ PowerShell khi chạy week11_analysis.py
-   và make_figure_week11.py trên Windows (CPU only). Số trong ảnh trùng week11_run.log và JSON.
-4. split_manifest.csv, scores.json, scores-detail.json, features_logmel_stats.npz: lấy từ tuần 9/10,
+3. week11_completeness.py: phân tích bổ sung cho Mục 6 báo cáo — đọc điểm câu accuracy/
+   completeness/fluency/prosodic trên 2.500 câu test từ parquet nguồn của corpus (2 file
+   train-00000-of-00001.parquet, test-00000-of-00001.parquet; khớp đúng danh sách test theo
+   split_manifest.csv) và đo âm học tự động trên 5 file worst5/*.WAV (biên độ đỉnh, RMS dBFS,
+   tỉ lệ khung 25 ms có năng lượng). Mọi số ở đây là số đo máy, không thay cho nghe của người
+   trong nhóm. Đầu ra: week11_completeness.json, week11_completeness.log. Cần pyarrow (đã có
+   trong requirements.txt). run_week11.ps1 chạy cả ba script theo đúng thứ tự analysis ->
+   completeness -> figures — thứ tự đó chính là thứ tự trong ảnh Terminal.
+4. terminal_week11_run_win.png: ảnh chụp thật cửa sổ PowerShell khi chạy week11_analysis.py,
+   week11_completeness.py và make_figure_week11.py trên Windows (CPU only). Số trong ảnh
+   trùng week11_run.log, week11_completeness.log và JSON.
+5. split_manifest.csv, scores.json, scores-detail.json, features_logmel_stats.npz: lấy từ tuần 9/10,
    giữ nguyên để tái lập đúng phép chia người nói và target.
-5. w2v_run.json: thông tin lần trích wav2vec 2.0 ngày 24/10/2026 (tuần 10), dùng lại, không trích lại.
+6. w2v_run.json: thông tin lần trích wav2vec 2.0 ngày 24/10/2026 (tuần 10), dùng lại, không trích lại.
    Embedding features_w2v_layers.npz (21 MB) không kèm trong ZIP; xem cách tạo ở mục CÁCH CHẠY LẠI.
 
 CÁCH CHẠY LẠI (CPU)
@@ -38,8 +44,9 @@ CÁCH CHẠY LẠI (CPU)
   Đặt thư mục report/week10_work cạnh week11_work, trong đó có features_w2v_layers.npz và
   split_manifest.csv (hoặc chạy extract_w2v.py của tuần 10 để tạo lại embedding, khoảng 25 phút CPU).
   python week11_analysis.py <thư mục speechocean762>
+  python week11_completeness.py <thư mục parquet HF (2 file train/test-00000-of-00001.parquet)>
   python make_figure_week11.py
-Kết quả recall/MAE/PCC tái lập được; thời gian đo thay đổi theo máy.
+Kết quả recall/MAE/PCC và các bảng completeness tái lập được; thời gian đo thay đổi theo máy.
 
 PHƯƠNG PHÁP
 Target chính = total trong scores.json = floor(trung vị năm điểm), khớp 5.000/5.000 câu.
@@ -58,11 +65,12 @@ wav2vec 2.0 base (Baevski và cộng sự, NeurIPS 2020), Apache 2.0: https://hu
 Ảnh minh chứng là ảnh chụp màn hình thật, không chỉnh sửa nội dung hay số.
 '''
 (P / 'README.txt').write_text(readme, encoding='utf-8')
-(P / 'requirements.txt').write_text('numpy==2.5.2\nscikit-learn==1.9.1\nmatplotlib==3.11.2\n')
+(P / 'requirements.txt').write_text('numpy==2.5.2\nscikit-learn==1.9.1\nmatplotlib==3.11.2\npyarrow==26.0.0\n')
 
-names = ['README.txt', 'requirements.txt', 'week11_analysis.py', 'make_figure_week11.py',
+names = ['README.txt', 'requirements.txt', 'week11_analysis.py', 'week11_completeness.py', 'make_figure_week11.py',
          'split_manifest.csv', 'scores.json', 'scores-detail.json', 'features_logmel_stats.npz', 'w2v_run.json',
-         'week11_results.json', 'week11_run.log', 'test_predictions_week11.csv', 'speaker_errors_test.csv',
+         'week11_results.json', 'week11_run.log', 'week11_completeness.json', 'week11_completeness.log',
+         'test_predictions_week11.csv', 'speaker_errors_test.csv',
          'fig1_cv_test.png', 'fig2_halves.png', 'fig3_speed_dist.png', 'figure_run.log', 'figure_stats.json',
          'terminal_week11_run_win.png'] + sorted('worst5/' + f.name for f in (P / 'worst5').glob('*.WAV'))
 missing = [n for n in names if not (P / n).exists()]

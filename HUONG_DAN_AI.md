@@ -1,6 +1,6 @@
 # Hướng dẫn cho AI đọc dự án MLA-Final
 
-**Cập nhật:** 31/10/2026
+**Cập nhật:** 31/10/2026; dựng lại toàn bộ ngày 09/11/2026 sau phỏng vấn 4/11 (mục 2.1).
 **Chủ dự án:** Nhóm 05, lớp 61FIT4MLA, môn MLA — báo cáo cho thầy Khánh.
 **Repo:** `/Users/chiseled/Documents/Github/MLA-Final`
 
@@ -37,11 +37,22 @@ Dự án dự đoán điểm phát âm mức câu trên bộ **speechocean762** 
 
 **Chưa xong:**
 
-- **Nghe 5 câu worst5**: mỗi câu cần ít nhất 2 người nghe độc lập, ghi lại thực tế nghe được. Đây là việc thầy sẽ hỏi. Hiện `listening_notes.json` vẫn là chữ giả ("Ghi chu thu mot hai ba..."), không được dùng.
-- Bản cuối 4,4 MB trên Windows phải mở kiểm cột Nghe 1/2 trước khi nộp; nếu vẫn là chữ giả thì chưa dùng được.
+- **Nghe 5 câu worst5**: mỗi câu cần ít nhất 2 người nghe độc lập, ghi lại thực tế nghe được. Đây là việc thầy sẽ hỏi. `listening_notes.json` ngày 9/11 đã được trả về **bản trống** (không còn chữ giả "Ghi chu thu..."), báo cáo ghi tường minh "chưa thực hiện".
+- Bản cuối 4,5 MB trên Windows phải mở kiểm cột Nghe 1/2 trước khi nộp; hiện bảng để trống đúng như trạng thái thật.
 - Đã commit ngày 31/10: docs, webapp, guide, `.gitignore` (commit `3244979`), sau đó bổ sung hướng dẫn Windows và `start.bat`. Các file nặng (`.venv`, WAVE, trọng số wav2vec, uploads) bị gitignore và vẫn nằm trên máy.
 
 **Đã dọn ngày 31/10:** xoá file nén dataset 520 MB (đã đối chiếu đủ 5.245 WAV), xoá bản WAVE tuần 9 trùng 622 MB, xoá `test_notes.docx` chứa ghi chú giả, xoá `.DS_Store`/`__pycache__`. Repo còn khoảng: `docs` 127 MB, `webapp` 1,7 GB (venv 688 MB + data 670 MB + models 377 MB).
+
+## 2.1. Cập nhật 09/11/2026 — dựng lại báo cáo tuần 11 sau phỏng vấn 4/11
+
+Người dùng xoá toàn bộ dữ liệu tuần 11 cũ trên máy Windows; nhóm dựng lại từ git và làm theo **3 điểm feedback phỏng vấn** (`docs/Interview's Feedback.txt`), nhấn mạnh phần **completeness**:
+
+- Cấu trúc mới: Mục 1 bảng ánh xạ 3 điểm feedback; Mục 2 định nghĩa bản ghi + 5 điểm giám khảo → total + kiểm chứng 1 bản ghi (015010033); Mục 3 định nghĩa 3 loại đặc trưng + recall@20% minh bạch **253/330** (danh sách 500 bài, precision 253/500); Mục 4 bảng CV đầy đủ; Mục 5 nửa tốc độ; **Mục 6 completeness** (thang đo thật, bảng 12 câu total ≤ 2, bảng worst5 cột Compl, bảng số đo âm học, nhóm compl = 0); Mục 7 thí nghiệm phụ LR; Mục 8 vấn đáp; Mục 9 thời gian.
+- Script mới `week11_completeness.py`: đọc điểm câu corpus trực tiếp từ parquet nguồn (khớp 2.500 câu test), đo âm học tự động 5 file worst5. Kết quả: nhóm completeness = 0 chỉ **5/2.500 câu** (total 0), mean pred 6,91 (log-mel) / 7,32 (wav2vec); thang completeness thực 0,00–10,00 (tài liệu ghi 0–1).
+- `listening_notes.json` = bản trống; bảng Nghe 1/2 trong report để trống kèm "Trạng thái phần nghe. Chưa thực hiện." — đúng sự thật, KHÔNG bịa ghi chú.
+- Thư mục `WAVE` của dataset week09 bị xoá khỏi máy: đã dựng lại đủ **5.000 file WAV** trong 9 giây bằng `docs/report/week11_work/rebuild_wave_from_parquet.py` từ 2 parquet (assert 5000/5000 + đủ 5 worst5; ánh xạ `SPEAKERxxxx` từ `split_manifest.csv`). WAV không đưa vào git (như quy ước cũ).
+- Lần chạy chính thức **11:16 ngày 9/11/2026** trong cửa sổ PowerShell thật, thứ tự analysis (253 s) → completeness (1 s) → figures; ảnh chụp `terminal_week11_run_win.png`; `verify_week11.py` PASS (worst5 đúng 5 mã tuần 10). Số bảng CV/test trùng khớp lần chạy 27/10 (deterministic, cùng seed + pipeline).
+- Bản nộp mới: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` — **4.466.557 byte, 9 trang**, SHA256 `46ed9907...a75fa2f8`; ZIP minh chứng 3.994.674 byte, **28 file** (thêm 3 file completeness), nhúng OLE `word/embeddings/oleObject1.bin`. Đã verify bằng script và render LibreOffice từng trang (không tràn bảng, không trang trắng).
 
 ## 3. Bản đồ file
 
@@ -147,6 +158,7 @@ wav2vec hơn chỉ-độ-dài 28 điểm % ở nửa nhanh và 4 điểm % ở n
 ### 4.7. Thời gian và môi trường
 
 - Lần chạy chính thức 27/10: phân tích 10 cấu hình + CV + phép kiểm nửa tốc độ mất **204,6 giây** (báo cáo ghi 205 giây), trên laptop Windows CPU, Python 3.14.5, scikit-learn 1.9.1. Ba hình vẽ chạy riêng sau đó.
+- Lần chạy chính thức mới nhất **11:16 ngày 9/11/2026**: analysis 253,4 s + completeness 0,7 s + figures, cùng seed/pipeline nên mọi số bảng trùng khớp lần 27/10; bản báo cáo 9/11 dùng đúng lần này (ảnh Terminal kèm trong report). Script completeness cần pyarrow 26.0.0.
 - Embedding wav2vec dùng lại bản trích tuần 10: 5.000 câu, 18.153,8 giây CPU (khoảng 5,04 giờ), không trích lại.
 - App demo hiện chạy Python 3.12.15, torch 2.9.1, transformers 4.57.1, scikit-learn 1.9.1, FastAPI 0.162.0.
 
@@ -282,11 +294,11 @@ Giới hạn: file ≤ 25 MB, audio ≤ 30 giây; ffmpeg chuyển về WAV 16 kH
 
 - Báo cáo Week 08, 09, 10 nằm trong `docs/` và `docs/report/`.
 - Nhận xét Week 10 của thầy: `docs/Nhan_xet_Week10_DT_Group05.docx` — 3 việc bắt buộc, 1 việc nên làm, 1 thí nghiệm phụ.
-- Báo cáo Week 11:
-  - Bản nộp cuối: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` (4.432.621 byte, 7 trang, SHA256 bắt đầu `31ec0008`, kết thúc `3ebc`), kèm `Group05_Week11_Attachments.zip` (3.965.542 byte, 25 file).
-  - Trong repo Mac: `docs/report/week11_work/test_blank.docx` — bản dựng 7 trang, cột nghe trống. Bản `test_notes.docx` từng có chữ giả đã bị xoá ngày 31/10.
-- Việc nghe worst5 vẫn chưa xong. Bộ nghe: `listen_kit/worst5_nghe_nhanh.wav` (31,5 giây), phiếu `PHIEU_NGHE.md`, `asr_windows.json`, `listen_times.json`. Cần hai người nghe độc lập, ghi riêng, rồi điền `listening_notes.json` và dựng lại báo cáo.
-- Mốc: báo cáo tuần 10 ngày 21/10; phân tích tuần 11 ngày 27/10; app demo 31/10; hôm nay 31/10.
+- Báo cáo Week 11 (bản dựng lại 09/11/2026):
+  - Bản nộp cuối: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` (4.466.557 byte, 9 trang, SHA256 bắt đầu `46ed9907`, kết thúc `a75fa2f8`), kèm `Group05_Week11_Attachments.zip` (3.994.674 byte, 28 file) nhúng OLE sẵn trong Word.
+  - Bản dựng trung gian: `docs/report/week11_work/report_before_embed.docx` (cột Nghe 1/2 trống). Bản `test_blank.docx` 7 trang cũ không còn dùng nữa.
+- Việc nghe worst5 vẫn chưa xong. Bộ nghe: `listen_kit/worst5_nghe_nhanh.wav` hoặc 5 file tăng âm trong `listen_kit/` + `NGHE.bat`, phiếu `PHIEU_NGHE.md`. Cần hai người nghe độc lập, ghi riêng, rồi điền `listening_notes.json` (nghe1/nghe2 từng mã) và dựng lại: `python build_report.py` → `python package.py` → `node embed_packages.cjs` → `python embed_report.py <đường dẫn bản nộp>` → `python verify_docx.py <bản nộp>`.
+- Mốc: báo cáo tuần 10 ngày 21/10; phân tích tuần 11 ngày 27/10; app demo 31/10; phỏng vấn 4/11; dựng lại toàn bộ ngày 9/11/2026.
 - Chưa có báo cáo/slide tuần 12.
 
 ## 9. Bộ câu hỏi — đáp án ngắn
@@ -319,7 +331,7 @@ Không. 250 người nói tiếng mẹ đẻ Quan Thoại, một nửa là trẻ
 Không. App trả mức ưu tiên nghe lại, percentile và P(dưới 6), không trả điểm chính thức. File upload không có điểm thật; chỉ câu mẫu test mới có 5 điểm giám khảo. Audio xử lý local, tối đa 25 MB / 30 giây.
 
 **10. Bản báo cáo nào dùng cho buổi tới?**
-`Group05_Week11_Report.docx` — bản 4,4 MB trên máy Windows, 7 trang, ngày 27/10. Không dùng lại báo cáo Week 10. Trong repo chỉ có bản dựng `test_blank.docx`; phải kiểm cột Nghe 1/2 trước khi nộp.
+`Group05_Week11_Report.docx` — bản 4,5 MB trên máy Windows, 9 trang, dựng lại ngày 9/11 theo 3 điểm feedback phỏng vấn, cột Nghe 1/2 trống và ghi "chưa thực hiện". Không dùng lại báo cáo Week 10. Sau khi nhóm nghe và điền `listening_notes.json` phải dựng lại bản mới.
 
 **11. Vì sao target_check có 2905 và 52?**
 Đó là **số câu khớp** của hai cách tính khác, không phải điểm: trung vị làm tròn gần nhất khớp 2.905 câu, trung bình khớp 52 câu. Cách chọn là trung vị làm tròn xuống, khớp 5.000/5.000.
@@ -341,11 +353,11 @@ Cùng cấu hình và đặc trưng, nhưng model demo được export ngày 31/
 
 ## 11. Việc còn lại
 
-1. Hai người nghe 5 câu worst5 bằng `listen_kit/worst5_nghe_nhanh.wav` hoặc 5 file trong `worst5/`, ghi độc lập vào `PHIEU_NGHE.md`.
-2. Điền `listening_notes.json`, dựng lại báo cáo bằng `build_report.py`, nhúng gói minh chứng, kiểm tra lại 7 trang.
-3. Mở bản cuối trên Windows, kiểm cột Nghe 1/2 và tên file `Group05_Week11_Report.docx`.
-4. README và `start.bat` đã có hướng dẫn Windows (đã commit ngày 31/10).
-5. Dựng lại môi trường: macOS dùng `python3.12 -m venv .venv` rồi `.venv/bin/pip install -r requirements.txt`; Windows dùng `py -3.12 -m venv .venv` rồi `.venv\Scripts\python -m pip install -r requirements.txt`. Cần Python 3.12 và ffmpeg.
+1. Hai người nghe 5 câu worst5 bằng `listen_kit/NGHE.bat` + `worst5_nghe_nhanh.wav` (hoặc 5 file tăng âm `listen_kit/`), ghi độc lập vào `PHIEU_NGHE.md`.
+2. Điền `listening_notes.json` (nghe1/nghe2 cho từng mã; chỉ ghi điều thật sự nghe được), rồi dựng lại: `python build_report.py` → `python package.py` → `node embed_packages.cjs` → `python embed_report.py "C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx"` → `python verify_docx.py <bản nộp>`.
+3. Mở bản cuối trên Windows (Microsoft Word) kiểm cột Nghe 1/2 và OLE mở được; rồi nộp.
+4. Windows: môi trường hệ thống Python 3.14.5 đã đủ cho pipeline tuần 11 (không cần venv); parquet nguồn để ở `Temp\opencode\sp762` (path mặc định của week11_completeness.py). Web app giữ nguyên venv Python 3.12 như mục 6.
+5. Nếu máy mất `WAVE`: chạy `python docs/report/week11_work/rebuild_wave_from_parquet.py <thư_mục_parquet>` (9 giây, 5.000 file).
 
 ---
 

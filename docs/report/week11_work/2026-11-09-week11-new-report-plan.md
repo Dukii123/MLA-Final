@@ -108,13 +108,16 @@
 - Modify: `docs/report/week11_work/package.py` (thêm 3 file completeness vào ZIP; README.txt bổ sung mô tả + pyarrow trong CÁCH CHẠY LẠI).
 - Create: `docs/report/Group05_Week11_Report.docx` (bản final); `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` (bàn giao).
 
-- [ ] **5.1** Sửa package.py (thêm `week11_completeness.py/.json/.log`); chạy → `Group05_Week11_Attachments.zip`.
-- [ ] **5.2** `node embed_packages.cjs` → `evidence.bin`; `python build_report.py "C:\...\report_week11\báo cáo tạm"`? — KHÔNG: đúng thứ tự AGENS: `python build_report.py` → copy sang `report_before_embed.docx` → package → node embed → `python embed_report.py "C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx"` (mkdir trước).
-- [ ] **5.3** `python verify_docx.py <final>` PASS; assert OLE tồn tại (`word/embeddings/oleObject1.bin`).
-- [ ] **5.4** Render: `soffice.com --headless --convert-to pdf` → đọc PDF từng trang (read tool) — không tràn bảng/ảnh, không trang trắng, chữ đen, nhãn Tuần 11.
-- [ ] **5.5** Cập nhật `HUONG_DAN_AI.md` (trạng thái 9/11: bản mới, số nguồn mới, việc nghe còn thiếu) + tiến trình trong `progress.md` mới (hoặc mục "Nhật ký 9/11" trong plan này).
-- [ ] **5.6** Commit cuối: `package week11 v2 evidence + handoff`.
+- [x] **5.1** Sửa package.py (thêm `week11_completeness.py/.json/.log`); chạy → `Group05_Week11_Attachments.zip`.
+- [x] **5.2** `node embed_packages.cjs` → `evidence.bin`; `python build_report.py "C:\...\report_week11\báo cáo tạm"`? — KHÔNG: đúng thứ tự AGENS: `python build_report.py` → copy sang `report_before_embed.docx` → package → node embed → `python embed_report.py "C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx"` (mkdir trước).
+- [x] **5.3** `python verify_docx.py <final>` PASS; assert OLE tồn tại (`word/embeddings/oleObject1.bin`).
+- [x] **5.4** Render: `soffice.com --headless --convert-to pdf` → đọc PDF từng trang (read tool) — không tràn bảng/ảnh, không trang trắng, chữ đen, nhãn Tuần 11.
+- [x] **5.5** Cập nhật `HUONG_DAN_AI.md` (trạng thái 9/11: bản mới, số nguồn mới, việc nghe còn thiếu) + tiến trình trong `progress.md` mới (hoặc mục "Nhật ký 9/11" trong plan này).
+- [x] **5.6** Commit cuối: `package week11 v2 evidence + handoff`.
 
 ## Nhật ký 9/11
 
 - 10:57 khôi phục week11_work từ git; kiểm tra env (node 24, pyarrow 26, LibreOffice có); viết plan.
+- 11:01 lần chạy chính thức đầu tiên chết trong week11_analysis.py: thư mục WAVE của dataset week09 đã bị xoá khỏi máy. Dựng lại 5.000 WAV từ 2 parquet trong 9 s bằng rebuild_wave_from_parquet.py (mới, commit kèm).
+- 11:16 lần chạy chính thức thứ hai OK: analysis 253,4 s → completeness 0,7 s → figures; chụp terminal_week11_run_win.png; verify_week11 OK (worst5 khớp tuần 10).
+- 11:2x–12:xx dựng lại report theo 3 điểm feedback; verify_docx PASS trước và sau khi nhúng OLE (đã sửa điều kiện [[OBJECTS]] thành XOR với trạng thái nhúng); render LibreOffice 9 trang — sửa 1 lỗi trình bày (cột Mã câu bảng worst5 bị ngắt ID) rồi dựng lại; bản nộp 4.466.557 byte, 9 trang; ZIP 28 file; HUONG_DAN_AI.md cập nhật trạng thái 9/11.

@@ -233,7 +233,7 @@ n_c0 = sum(1 for x in W5C if x['compl'] == 0.0)
 lead('Năm câu sai nặng nhất (cùng bộ tuần 10, đã kiểm tra trùng mã câu).', 'Định nghĩa: năm câu total dưới 6 mà SVR log-mel đoán cao hơn thật nhiều nhất. Bảng dưới thêm cột completeness: ' + str(n_c0) + '/5 câu có completeness = 0,0 — corpus coi phần đọc không còn từ nào tin cậy (đọc lạc đề, quá nhỏ, hoặc gần như không có tiếng đọc); riêng 014040122 có 1,7, tức chỉ khoảng 17% số từ được coi là đọc tốt. Nhịp đọc của cả năm câu lại gần tốc độ đọc bình thường (trung vị test ' + vn(H['threshold_sec_per_word'], 2) + ' s/từ — xem Hình 3), nên các đặc trưng mức câu ở Mục 3 không nhìn thấy phần nội dung thiếu.')
 booktabs(['Mã câu', 'Câu đọc', 'Năm điểm', 'Total', 'Acc', 'Compl', 'Log-mel', 'w2v', 'Giây'],
          [[x['id'], x['text'], five_str(x['five']), vn(x['total'], 0), vn(x['acc'], 0), vn(x['compl'], 1), vn(x['pred_logmel'], 2), vn(x['pred_w2v'], 2), vn(x['sec_per_word'], 1)] for x in W5C],
-         [1.6, 4.2, 2.35, 1.0, 0.9, 1.15, 1.35, 1.2, 0.9], num_from=2, size=8.5)
+         [1.9, 3.9, 2.35, 1.0, 0.9, 1.15, 1.35, 1.2, 0.9], num_from=2, size=8.5)
 lead('Số đo tự động trên file WAV (không phải nghe).', 'Bảng dưới là những gì đo được trong lần chạy này: biên độ đỉnh, RMS theo dBFS và tỉ lệ khung 25 ms có năng lượng đáng chú ý (ngưỡng = 8% biên độ khung cao nhất). Cả 5 file có tín hiệu rất nhỏ; đây là số tự động được ghi chính xác như đo, KHÔNG thay cho phần nghe của con người.')
 booktabs(['Mã câu', 'Biên độ đỉnh', 'RMS (dBFS)', 'Khung có năng lượng', 'Giây'],
          [[x['id'], vn(x['acoustic']['peak'], 2), vn(x['acoustic']['rms_dbfs'], 1), vn(x['acoustic']['pct_frames'], 0) + '%', vn(x['acoustic']['duration_s'], 1)] for x in W5C],
