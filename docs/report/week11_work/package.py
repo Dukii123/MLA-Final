@@ -22,14 +22,17 @@ NỘI DUNG
    - thí nghiệm phụ: LR cân bằng lớp trên embedding wav2vec 2.0.
    Đầu ra: week11_results.json, week11_run.log, test_predictions_week11.csv,
    speaker_errors_test.csv, worst5/*.WAV (audio 5 câu sai nặng nhất).
+2. make_figure_week11.py: vẽ fig1_cv_test.png (lollipop CV so với test), fig2_halves.png
+   (cột ghép theo nửa tốc độ), fig3_speed_dist.png (phân bố giây/từ); đầu ra figure_run.log,
+   figure_stats.json.
 3. week11_completeness.py: phân tích bổ sung cho Mục 6 báo cáo — đọc điểm câu accuracy/
-   completeness/fluency/prosodic trên 2.500 câu test từ parquet nguồn của corpus (2 file
-   train-00000-of-00001.parquet, test-00000-of-00001.parquet; khớp đúng danh sách test theo
-   split_manifest.csv) và đo âm học tự động trên 5 file worst5/*.WAV (biên độ đỉnh, RMS dBFS,
-   tỉ lệ khung 25 ms có năng lượng). Mọi số ở đây là số đo máy, không thay cho nghe của người
-   trong nhóm. Đầu ra: week11_completeness.json, week11_completeness.log. Cần pyarrow (đã có
-   trong requirements.txt). run_week11.ps1 chạy cả ba script theo đúng thứ tự analysis ->
-   completeness -> figures — thứ tự đó chính là thứ tự trong ảnh Terminal.
+   completeness/fluency/prosodic trên 2.500 câu test từ file parquet test-00000-of-00001.parquet
+   (khớp đúng danh sách test theo split_manifest.csv) và đo âm học tự động trên 5 file
+   worst5/*.WAV (biên độ đỉnh, RMS dBFS, tỉ lệ khung 25 ms có năng lượng). Mọi số ở đây là
+   số đo máy, không thay cho nghe của người trong nhóm. Đầu ra: week11_completeness.json,
+   week11_completeness.log. Cần pyarrow (đã có trong requirements.txt). run_week11.ps1 chạy
+   cả ba script theo đúng thứ tự analysis -> completeness -> figures — thứ tự đó chính là
+   thứ tự trong ảnh Terminal.
 4. terminal_week11_run_win.png: ảnh chụp thật cửa sổ PowerShell khi chạy week11_analysis.py,
    week11_completeness.py và make_figure_week11.py trên Windows (CPU only). Số trong ảnh
    trùng week11_run.log, week11_completeness.log và JSON.

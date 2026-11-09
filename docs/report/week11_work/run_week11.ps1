@@ -10,6 +10,7 @@ try {
 $env:PYTHONUTF8 = '1'
 $env:PYTHONIOENCODING = 'utf-8'
 $py = 'C:\Users\DucAnh\AppData\Local\Programs\Python\Python314\python.exe'
+$parq = 'C:\Users\DucAnh\AppData\Local\Temp\opencode\sp762'   # 2 file parquet HF (train/test-00000-of-00001.parquet)
 $done = Join-Path $PSScriptRoot 'official_run.done'
 if (Test-Path $done) { Remove-Item $done -Force }
 
@@ -21,7 +22,7 @@ if ($LASTEXITCODE -ne 0) {
     Read-Host 'press enter to close'
     exit 1
 }
-& $py week11_completeness.py
+& $py week11_completeness.py $parq
 if ($LASTEXITCODE -ne 0) {
     Write-Host "COMPLETENESS FAILED exit=$LASTEXITCODE"
     Set-Content -Path $done -Value 'FAILED' -Encoding ASCII

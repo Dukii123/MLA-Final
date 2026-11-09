@@ -52,7 +52,7 @@ Người dùng xoá toàn bộ dữ liệu tuần 11 cũ trên máy Windows; nh�
 - `listening_notes.json` = bản trống; bảng Nghe 1/2 trong report để trống kèm "Trạng thái phần nghe. Chưa thực hiện." — đúng sự thật, KHÔNG bịa ghi chú.
 - Thư mục `WAVE` của dataset week09 bị xoá khỏi máy: đã dựng lại đủ **5.000 file WAV** trong 9 giây bằng `docs/report/week11_work/rebuild_wave_from_parquet.py` từ 2 parquet (assert 5000/5000 + đủ 5 worst5; ánh xạ `SPEAKERxxxx` từ `split_manifest.csv`). WAV không đưa vào git (như quy ước cũ).
 - Lần chạy chính thức **11:16 ngày 9/11/2026** trong cửa sổ PowerShell thật, thứ tự analysis (253 s) → completeness (1 s) → figures; ảnh chụp `terminal_week11_run_win.png`; `verify_week11.py` PASS (worst5 đúng 5 mã tuần 10). Số bảng CV/test trùng khớp lần chạy 27/10 (deterministic, cùng seed + pipeline).
-- Bản nộp mới: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` — **4.466.557 byte, 9 trang**, SHA256 `46ed9907...a75fa2f8`; ZIP minh chứng 3.994.674 byte, **28 file** (thêm 3 file completeness), nhúng OLE `word/embeddings/oleObject1.bin`. Đã verify bằng script và render LibreOffice từng trang (không tràn bảng, không trang trắng).
+- Bản nộp mới: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` — **4.466.710 byte, 9 trang**, SHA256 `fd08df14...f300e396`; ZIP minh chứng 3.994.761 byte, **28 file** (thêm 3 file completeness), nhúng OLE `word/embeddings/oleObject1.bin`. Đã verify bằng script và render LibreOffice từng trang (không tràn bảng, không trang trắng). Sau đó agent duyệt mã độc lập đã soi: sửa các câu suy diễn không khớp bảng (7 câu total ≤ 2 "đọc đủ nội dung" → có completeness 1,7–10,0; "nhịp đọc gần bình thường" → dao động 0,6–1,3 s/từ; "tín hiệu rất nhỏ" → RMS dưới −35 dBFS dù đỉnh 0,58–0,60), bù mục 2 trong README ZIP, và `week11_completeness.py` giờ đọc phiên bản pyarrow thật (không hard-code) — rồi đóng gói lại chính là bản này.
 
 ## 3. Bản đồ file
 
@@ -295,7 +295,7 @@ Giới hạn: file ≤ 25 MB, audio ≤ 30 giây; ffmpeg chuyển về WAV 16 kH
 - Báo cáo Week 08, 09, 10 nằm trong `docs/` và `docs/report/`.
 - Nhận xét Week 10 của thầy: `docs/Nhan_xet_Week10_DT_Group05.docx` — 3 việc bắt buộc, 1 việc nên làm, 1 thí nghiệm phụ.
 - Báo cáo Week 11 (bản dựng lại 09/11/2026):
-  - Bản nộp cuối: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` (4.466.557 byte, 9 trang, SHA256 bắt đầu `46ed9907`, kết thúc `a75fa2f8`), kèm `Group05_Week11_Attachments.zip` (3.994.674 byte, 28 file) nhúng OLE sẵn trong Word.
+  - Bản nộp cuối: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` (4.466.710 byte, 9 trang, SHA256 bắt đầu `fd08df14`, kết thúc `f300e396`), kèm `Group05_Week11_Attachments.zip` (3.994.761 byte, 28 file, `41dd0edb...ece1a5fc`) nhúng OLE sẵn trong Word.
   - Bản dựng trung gian: `docs/report/week11_work/report_before_embed.docx` (cột Nghe 1/2 trống). Bản `test_blank.docx` 7 trang cũ không còn dùng nữa.
 - Việc nghe worst5 vẫn chưa xong. Bộ nghe: `listen_kit/worst5_nghe_nhanh.wav` hoặc 5 file tăng âm trong `listen_kit/` + `NGHE.bat`, phiếu `PHIEU_NGHE.md`. Cần hai người nghe độc lập, ghi riêng, rồi điền `listening_notes.json` (nghe1/nghe2 từng mã) và dựng lại: `python build_report.py` → `python package.py` → `node embed_packages.cjs` → `python embed_report.py <đường dẫn bản nộp>` → `python verify_docx.py <bản nộp>`.
 - Mốc: báo cáo tuần 10 ngày 21/10; phân tích tuần 11 ngày 27/10; app demo 31/10; phỏng vấn 4/11; dựng lại toàn bộ ngày 9/11/2026.

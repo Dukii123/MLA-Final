@@ -6,6 +6,7 @@
 from pathlib import Path
 import csv, json, sys, wave, platform, time
 import numpy as np
+import pyarrow
 import pyarrow.parquet as pq
 
 P = Path(__file__).parent
@@ -124,7 +125,7 @@ assert all(abs(corpus[u]['compl']) < 1e-9 for u in zero911), {u: corpus[u]['comp
 assert abs(corpus['014040122']['compl'] - 1.7) < 1e-9, corpus['014040122']['compl']
 assert sum(1 for u in W5_IDS if corpus[u]['compl'] == 0.0) == 4, 'worst5 phai gom 4 cau compl == 0 + 1 cau 1.7'
 
-out = {'python': platform.python_version(), 'pyarrow': '26.0.0', 'seconds': round(time.perf_counter() - t0, 1),
+out = {'python': platform.python_version(), 'pyarrow': pyarrow.__version__, 'seconds': round(time.perf_counter() - t0, 1),
        'n_test': n_test, 'scale': scale, 'compl_zero': compl_zero, 'ids_compl_zero': ids_zero,
        'low_total2': low2, 'n_zero_in_low12': n_zero2, 'worst5': worst5, 'n_all_below6_test': n_all_low}
 (P / 'week11_completeness.json').write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding='utf-8')

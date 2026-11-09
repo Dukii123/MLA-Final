@@ -40,6 +40,9 @@ assert pct(cvl) in full, f'thiếu recall@20 CV chỉ-độ-dài {pct(cvl)}'
 assert f"{R['low_total']['n']} câu" in full, 'thiếu số câu nhóm total <= 2'
 thr = vn(R['halves']['threshold_sec_per_word'], 2)
 assert thr in full, f'thiếu ngưỡng trung vị giây/từ {thr}'
+assert '253/330' in full and '253/500' in full, 'thiếu recall/precision@20% minh bạch'
+assert '+1,77' in full, 'thiếu bias_low của wav2vec'
+assert '0,00–10,00' in full, 'thiếu thang completeness đo được'
 CZ = C['compl_zero']
 num = lambda n: f'{n:,}'.replace(',', '.')
 assert f"{CZ['n']}/{num(CZ['n_test'])}" in full, 'thiếu nhóm completeness = 0'
