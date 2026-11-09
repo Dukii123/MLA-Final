@@ -1,0 +1,14 @@
+Week 11 completeness analysis | Python 3.14.5 | CPU only | 0.7 s
+--- [1] Thang diem corpus do duoc tren 2.500 cau test (min|max) ---
+accuracy 1.0|10.0 | completeness 0.00|10.00 | fluency 0.0|10.0 | prosodic 0.0|10.0 | total 0.0|10.0
+(README corpus ghi completeness 0.0-1.0; du lieu thuc toi 10.0)
+--- [2] floor(median five) == total: ok tren 2500/2500 cau (sheet nguon: utterances.json + parquet + csv) ---
+--- [3] Nhom completeness == 0: 5/2500 cau; mean total 0.00; mean pred: logmel 6.91, w2v 7.32; below6 5/5 = 1.5% cua 330 bai under 6 ---
+--- [4] Nhom total <= 2: n = 12; trong do completeness == 0: 5 cau (so cau con lai la phat am sai nhung doc du) ---
+--- [5] Worst 5 (over = pred_logmel - target): corpus + do am hoc tu dong ---
+014040089 total 0 pred 7.15/7.16 | acc 3.0 compl 0.0 flu 0.0 pros 0.0 | 4/4 tu <5 | 3.8 s | peak 0.14 rms -42.7 dBFS | khung co nang luong 37.6%
+069020059 total 0 pred 7.09/7.33 | acc 3.0 compl 0.0 flu 0.0 pros 0.0 | 7/7 tu <5 | 3.88 s | peak 0.58 rms -35.6 dBFS | khung co nang luong 9.3%
+014040122 total 0 pred 7.07/7.12 | acc 3.0 compl 1.7 flu 0.0 pros 0.0 | 6/6 tu <5 | 4.04 s | peak 0.19 rms -40.5 dBFS | khung co nang luong 46.5%
+014040090 total 0 pred 7.02/7.30 | acc 4.0 compl 0.0 flu 0.0 pros 0.0 | 4/4 tu <5 | 5.24 s | peak 0.31 rms -39.1 dBFS | khung co nang luong 11.9%
+069020075 total 0 pred 6.65/7.53 | acc 3.0 compl 0.0 flu 0.0 pros 0.0 | 6/6 tu <5 | 3.8 s | peak 0.60 rms -37.3 dBFS | khung co nang luong 7.4%
+Chu y: do am hoc la SOC tu dong tu WAV, khong thay cho nghe cua nguoi trong nhom.

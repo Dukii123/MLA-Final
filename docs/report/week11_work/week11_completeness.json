@@ -1,0 +1,438 @@
+{
+  "python": "3.14.5",
+  "pyarrow": "26.0.0",
+  "seconds": 0.7,
+  "n_test": 2500,
+  "scale": {
+    "accuracy": [
+      1.0,
+      10.0
+    ],
+    "completeness": [
+      0.0,
+      10.0
+    ],
+    "fluency": [
+      0.0,
+      10.0
+    ],
+    "prosodic": [
+      0.0,
+      10.0
+    ],
+    "total": [
+      0.0,
+      10.0
+    ],
+    "completeness_documented_range": "0.0-1.0 theo README corpus; du lieu tuan thu thi max den 10"
+  },
+  "compl_zero": {
+    "n": 5,
+    "n_test": 2500,
+    "mean_total": 0.0,
+    "mean_pred_logmel": 6.9112952654561735,
+    "mean_pred_w2v": 7.324901006804097,
+    "n_below6": 5,
+    "share_of_all_below6": 0.015151515151515152
+  },
+  "ids_compl_zero": [
+    "014040088",
+    "014040089",
+    "014040090",
+    "069020059",
+    "069020075"
+  ],
+  "low_total2": [
+    {
+      "id": "014040088",
+      "text": "HERE IS PETER'S SOCKS",
+      "five": [
+        0.0,
+        0.0,
+        0.8,
+        3.2,
+        1.0
+      ],
+      "total": 0.0,
+      "acc": 4.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 4,
+      "n_lt5": 4,
+      "sec_per_word": 1.0700000524520874,
+      "pred_logmel": 6.646242501613842,
+      "pred_w2v": 7.311820649527975
+    },
+    {
+      "id": "014040089",
+      "text": "HERE IS TIM'S CAP",
+      "five": [
+        0.0,
+        1.2,
+        0.8,
+        1.2,
+        0.0
+      ],
+      "total": 0.0,
+      "acc": 3.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 4,
+      "n_lt5": 4,
+      "sec_per_word": 0.949999988079071,
+      "pred_logmel": 7.152860780035674,
+      "pred_w2v": 7.156624891619144
+    },
+    {
+      "id": "014040090",
+      "text": "HERE IS MARY'S SHOES",
+      "five": [
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.8
+      ],
+      "total": 0.0,
+      "acc": 4.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 4,
+      "n_lt5": 4,
+      "sec_per_word": 1.309999942779541,
+      "pred_logmel": 7.015608282425167,
+      "pred_w2v": 7.295289800321119
+    },
+    {
+      "id": "014040122",
+      "text": "HEY WATCH OUT FOR MY CUCUMBER",
+      "five": [
+        0.41,
+        0.81,
+        0.0,
+        1.07,
+        1.07
+      ],
+      "total": 0.0,
+      "acc": 3.0,
+      "compl": 1.7,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 6,
+      "n_lt5": 6,
+      "sec_per_word": 0.6733333269755045,
+      "pred_logmel": 7.066633855478098,
+      "pred_w2v": 7.117963784572218
+    },
+    {
+      "id": "014040148",
+      "text": "HE LIKES THE FAMOUS CITY SYDNEY",
+      "five": [
+        1.26,
+        2.0,
+        0.54,
+        0.0,
+        0.0
+      ],
+      "total": 0.0,
+      "acc": 4.0,
+      "compl": 5.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 6,
+      "n_lt5": 5,
+      "sec_per_word": 0.6866666475931803,
+      "pred_logmel": 6.489223708162466,
+      "pred_w2v": 6.555145081457327
+    },
+    {
+      "id": "069020059",
+      "text": "THEY DID NOT SEE THEM ANY MORE",
+      "five": [
+        0.0,
+        0.0,
+        0.0,
+        2.4,
+        0.0
+      ],
+      "total": 0.0,
+      "acc": 3.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 7,
+      "n_lt5": 7,
+      "sec_per_word": 0.5542857306344169,
+      "pred_logmel": 7.0870127455091145,
+      "pred_w2v": 7.331960939869958
+    },
+    {
+      "id": "069020075",
+      "text": "SHE MUST BE MADE TO STAY",
+      "five": [
+        0.0,
+        0.0,
+        0.0,
+        0.79,
+        0.0
+      ],
+      "total": 0.0,
+      "acc": 3.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 6,
+      "n_lt5": 6,
+      "sec_per_word": 0.6333333253860474,
+      "pred_logmel": 6.654752017697077,
+      "pred_w2v": 7.52880875268229
+    },
+    {
+      "id": "014040052",
+      "text": "JAYME LIKES MOUNTAIN BIKING",
+      "five": [
+        1.8,
+        0.0,
+        1.9,
+        2.4,
+        2.3
+      ],
+      "total": 1.0,
+      "acc": 3.0,
+      "compl": 7.5,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 4,
+      "n_lt5": 4,
+      "sec_per_word": 1.0499999523162842,
+      "pred_logmel": 7.138251896167255,
+      "pred_w2v": 6.698983931446641
+    },
+    {
+      "id": "014040097",
+      "text": "WHAT A LOVELY SHINY UNDERGROUND",
+      "five": [
+        0.88,
+        1.18,
+        1.48,
+        4.2,
+        4.8
+      ],
+      "total": 1.0,
+      "acc": 1.0,
+      "compl": 6.0,
+      "flu": 4.0,
+      "pros": 4.0,
+      "n_words": 5,
+      "n_lt5": 2,
+      "sec_per_word": 1.0,
+      "pred_logmel": 6.9036289789805085,
+      "pred_w2v": 6.947503321748877
+    },
+    {
+      "id": "069020065",
+      "text": "SO I WENT AWAY AND SAID NOTHING",
+      "five": [
+        4.4,
+        1.37,
+        0.0,
+        4.3,
+        0.83
+      ],
+      "total": 1.0,
+      "acc": 4.0,
+      "compl": 7.1,
+      "flu": 2.0,
+      "pros": 2.0,
+      "n_words": 7,
+      "n_lt5": 4,
+      "sec_per_word": 0.7600000245230538,
+      "pred_logmel": 7.500997175583537,
+      "pred_w2v": 6.32553185070678
+    },
+    {
+      "id": "014040081",
+      "text": "BY DORA'S SHOULDER",
+      "five": [
+        1.81,
+        3.8,
+        1.73,
+        2.6,
+        2.11
+      ],
+      "total": 2.0,
+      "acc": 3.0,
+      "compl": 6.7,
+      "flu": 3.0,
+      "pros": 2.0,
+      "n_words": 3,
+      "n_lt5": 2,
+      "sec_per_word": 2.0399999618530273,
+      "pred_logmel": 7.192004680112628,
+      "pred_w2v": 6.6313325512807
+    },
+    {
+      "id": "014220070",
+      "text": "JIM SMELLS FRESH BEEF",
+      "five": [
+        2.8,
+        2.9,
+        3.1,
+        2.6,
+        3.2
+      ],
+      "total": 2.0,
+      "acc": 3.0,
+      "compl": 10.0,
+      "flu": 4.0,
+      "pros": 3.0,
+      "n_words": 4,
+      "n_lt5": 3,
+      "sec_per_word": 1.2569999694824219,
+      "pred_logmel": 7.200206525018179,
+      "pred_w2v": 6.460277325770371
+    }
+  ],
+  "n_zero_in_low12": 5,
+  "worst5": [
+    {
+      "id": "014040089",
+      "text": "HERE IS TIM'S CAP",
+      "five": [
+        0.0,
+        1.2,
+        0.8,
+        1.2,
+        0.0
+      ],
+      "total": 0.0,
+      "acc": 3.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 4,
+      "n_lt5": 4,
+      "sec_per_word": 0.949999988079071,
+      "pred_logmel": 7.152860780035674,
+      "pred_w2v": 7.156624891619144,
+      "acoustic": {
+        "peak": 0.13580322265625,
+        "rms_dbfs": -42.7413215637207,
+        "pct_frames": 37.6,
+        "duration_s": 3.8
+      }
+    },
+    {
+      "id": "069020059",
+      "text": "THEY DID NOT SEE THEM ANY MORE",
+      "five": [
+        0.0,
+        0.0,
+        0.0,
+        2.4,
+        0.0
+      ],
+      "total": 0.0,
+      "acc": 3.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 7,
+      "n_lt5": 7,
+      "sec_per_word": 0.5542857306344169,
+      "pred_logmel": 7.0870127455091145,
+      "pred_w2v": 7.331960939869958,
+      "acoustic": {
+        "peak": 0.582122802734375,
+        "rms_dbfs": -35.62308120727539,
+        "pct_frames": 9.3,
+        "duration_s": 3.88
+      }
+    },
+    {
+      "id": "014040122",
+      "text": "HEY WATCH OUT FOR MY CUCUMBER",
+      "five": [
+        0.41,
+        0.81,
+        0.0,
+        1.07,
+        1.07
+      ],
+      "total": 0.0,
+      "acc": 3.0,
+      "compl": 1.7,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 6,
+      "n_lt5": 6,
+      "sec_per_word": 0.6733333269755045,
+      "pred_logmel": 7.066633855478098,
+      "pred_w2v": 7.117963784572218,
+      "acoustic": {
+        "peak": 0.190826416015625,
+        "rms_dbfs": -40.5377197265625,
+        "pct_frames": 46.5,
+        "duration_s": 4.04
+      }
+    },
+    {
+      "id": "014040090",
+      "text": "HERE IS MARY'S SHOES",
+      "five": [
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.8
+      ],
+      "total": 0.0,
+      "acc": 4.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 4,
+      "n_lt5": 4,
+      "sec_per_word": 1.309999942779541,
+      "pred_logmel": 7.015608282425167,
+      "pred_w2v": 7.295289800321119,
+      "acoustic": {
+        "peak": 0.313934326171875,
+        "rms_dbfs": -39.11521530151367,
+        "pct_frames": 11.9,
+        "duration_s": 5.24
+      }
+    },
+    {
+      "id": "069020075",
+      "text": "SHE MUST BE MADE TO STAY",
+      "five": [
+        0.0,
+        0.0,
+        0.0,
+        0.79,
+        0.0
+      ],
+      "total": 0.0,
+      "acc": 3.0,
+      "compl": 0.0,
+      "flu": 0.0,
+      "pros": 0.0,
+      "n_words": 6,
+      "n_lt5": 6,
+      "sec_per_word": 0.6333333253860474,
+      "pred_logmel": 6.654752017697077,
+      "pred_w2v": 7.52880875268229,
+      "acoustic": {
+        "peak": 0.596588134765625,
+        "rms_dbfs": -37.290260314941406,
+        "pct_frames": 7.4,
+        "duration_s": 3.8
+      }
+    }
+  ],
+  "n_all_below6_test": 330
+}
