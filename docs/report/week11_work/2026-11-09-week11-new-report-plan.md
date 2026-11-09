@@ -97,10 +97,10 @@
 
 **Interfaces:** chạy qua `official_capture.ps1` (cửa sổ PowerShell thật → done-file → PrintWindow → đóng).
 
-- [ ] **4.1** Sửa `run_week11.ps1`: thứ tự analysis → completeness → figures (một ảnh chụp là minh chứng cho cả ba).
-- [ ] **4.2** Chạy `official_capture.ps1` đên done (analysis ~3,5 phút + completeness ~15 giây + figures).
-- [ ] **4.3** Kiểm chứng: `verify_week11.py` PASS; ảnh PNG mới (mtime, kích thước); JSON/log mới có mtime đúng buổi này.
-- [ ] **4.4** Commit: `official week11 run + completeness evidence`.
+- [x] **4.1** Sửa `run_week11.ps1`: thứ tự analysis → completeness → figures (một ảnh chụp là minh chứng cho cả ba).
+- [x] **4.2** Chạy `official_capture.ps1` đên done (analysis ~3,5 phút + completeness ~15 giây + figures).
+- [x] **4.3** Kiểm chứng: `verify_week11.py` PASS; ảnh PNG mới (mtime, kích thước); JSON/log mới có mtime đúng buổi này.
+- [x] **4.4** Commit: `official week11 run + completeness evidence`.
 
 ### Task 5: Đóng gói minh chứng + nhúng OLE + render kiểm + bàn giao
 

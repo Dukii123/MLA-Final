@@ -21,6 +21,13 @@ if ($LASTEXITCODE -ne 0) {
     Read-Host 'press enter to close'
     exit 1
 }
+& $py week11_completeness.py
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "COMPLETENESS FAILED exit=$LASTEXITCODE"
+    Set-Content -Path $done -Value 'FAILED' -Encoding ASCII
+    Read-Host 'press enter to close'
+    exit 1
+}
 & $py make_figure_week11.py
 if ($LASTEXITCODE -ne 0) {
     Write-Host "FIGURES FAILED exit=$LASTEXITCODE"

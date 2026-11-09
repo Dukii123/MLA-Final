@@ -44,4 +44,4 @@ n = 12 | mean prediction: SVR log-mel 7.00, SVR length only 6.94, SVR wav2vec2 6
 predicted > 5 points: SVR log-mel 12/12, SVR length only 12/12, SVR wav2vec2 12/12
 --- [8] Extra: LR balanced on wav2vec embeddings (optional experiment) ---
 LR balanced wav2vec: CV R@20 80.4%±8.4 | test R@10 51%, R@20 74%, P@10 67%, P@20 49%
-Analysis total 204.6 s
+Analysis total 253.4 s
