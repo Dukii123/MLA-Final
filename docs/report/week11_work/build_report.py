@@ -8,17 +8,23 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
 
-# Bao cao Tuan 11: theo 3 viec bat buoc + 1 nen lam + 1 thu nghiem phu trong Nhan_xet_Week10.
-# Kieu trinh bay doi mot chut so tuan 10: khung ket qua kieu "mo" (chi vien duoi), bang CV rong hon,
-# ba hinh kieu moi (lollipop CV-test, grouped bar nua doc, histogram giay/tu). Anh Terminal giu kieu cu.
-# Moi so lay tu week11_results.json + figure_stats.json cua lan chay co anh Terminal.
+# Bao cao Tuan 11 (ban moi sau buoi phong van 4/11): cau truc bam 3 diem feedback
+# [FB1] dinh nghia mot ban ghi, nam diem giam khao -> total, kiem chung tren mot ban ghi, nguoi noi tach roi;
+# [FB2] dinh nghia ba loai dac trung (do dai, log-mel, wav2vec), so sanh tren cung phep danh gia,
+#       recall@20% tinh ro tu danh sach duoc chon va tong so bai under 6;
+# [FB3] tu nghe 5 cau loi nang nhat, chi phan biet doc lac/im lang khi so lieu ho tro.
+# Trong tam cua ban nay la completeness (yeu cau cua nguoi dung + FB3).
+# Moi so lay tu week11_results.json + week11_completeness.json + figure_stats.json cua lan chay co anh Terminal.
 P = Path(__file__).parent
-R = json.loads((P / 'week11_results.json').read_text(encoding='utf-8')); FS = json.loads((P / 'figure_stats.json').read_text(encoding='utf-8'))
+R = json.loads((P / 'week11_results.json').read_text(encoding='utf-8'))
+FS = json.loads((P / 'figure_stats.json').read_text(encoding='utf-8'))
+C_ = json.loads((P / 'week11_completeness.json').read_text(encoding='utf-8'))
+CZ, L2, W5C = C_['compl_zero'], C_['low_total2'], C_['worst5']
 _t = datetime.datetime.fromtimestamp((P / 'week11_run.log').stat().st_mtime)
 RUN = _t.strftime('%H:%M') + ' ngày ' + f'{_t.day}/{_t.month}/{_t.year}'
 RUN_DATE = f'{_t.day:02d}/{_t.month:02d}/{_t.year}'
 M, CVT, H, LT, B6 = R['models'], R['cv_table'], R['halves'], R['low_total'], R['below6']
-# Ghi chu nghe: dien vao listening_notes.json (nghe1/nghe2 cho tung ma cau).
+# Ghi chu nghe: dien vao listening_notes.json (nghe1/nghe2 cho tung ma cau). Chua nghe -> de trong.
 _notes_path = P / 'listening_notes.json'
 NOTES = json.loads(_notes_path.read_text(encoding='utf-8-sig')) if _notes_path.exists() else {}
 note = lambda uid, who: str(NOTES.get(uid, {}).get(who, '')).strip()
@@ -28,6 +34,7 @@ vn = lambda x, n: f'{x:.{n}f}'.replace('.', ',')
 pct = lambda v: f'{v*100:.0f}%'
 num = lambda n: f'{n:,}'.replace(',', '.')
 sgn = lambda v, n: ('+' if v > 0 else '−' if v < 0 else '') + vn(abs(v), n)
+five_str = lambda fs: ' · '.join(vn(v, 0) if v == int(v) else vn(v, 1) for v in fs)
 
 D = Document(); sec = D.sections[0]
 sec.page_width, sec.page_height = Cm(21), Cm(29.7)
@@ -120,86 +127,87 @@ def figure_pair(left, right):
 
 # ---- Dau trang ----
 V9 = json.loads((P.parent / 'week09_work' / 'verified_results.json').read_text(encoding='utf-8'))['agreement']['total']
-TC = R['target_check']; SP = R['speakers']; AG = R['ages']; RT_ = R['raters']; SEC = R['secondary_mean_target']
+TC = R['target_check']; RT_ = R['raters']; SEC = R['secondary_mean_target']
 top = p('NHÓM 05  ·  LỚP 61FIT4MLA  ·  NGÀY ' + RUN_DATE, align=WD_ALIGN_PARAGRAPH.LEFT)
 top.runs[0].font.size = Pt(10); top.paragraph_format.space_after = Pt(0)
 tt = p('Báo cáo tiến độ Tuần 11', align=WD_ALIGN_PARAGRAPH.LEFT); tt.runs[0].font.size = Pt(20); tt.runs[0].bold = True
 tt.paragraph_format.space_after = Pt(0)
-st = p('Wav2vec 2.0 thêm gì ngoài tốc độ đọc?', align=WD_ALIGN_PARAGRAPH.LEFT); st.runs[0].italic = True; st.runs[0].font.size = Pt(13)
+st = p('Nhãn, đặc trưng và lỗi nặng nhất — bám 3 điểm feedback sau phỏng vấn', align=WD_ALIGN_PARAGRAPH.LEFT)
+st.runs[0].italic = True; st.runs[0].font.size = Pt(13)
 border(st._p.get_or_add_pPr(), ['bottom'], 12); st.paragraph_format.space_after = Pt(8)
 
-w, l, d0 = T('SVR wav2vec 2.0'), T('SVR log-mel'), T('SVR chỉ độ dài')
-w2l = T('SVR wav2vec + độ dài'); lr = T('LR phân loại cân bằng'); lrw = T('LR phân loại cân bằng (wav2vec)')
+w = T('SVR wav2vec 2.0')
+w2l = T('SVR wav2vec + độ dài'); lrw = T('LR phân loại cân bằng (wav2vec)')
 cvw = CVT['SVR wav2vec 2.0']['recall20']; cvwl = CVT['SVR wav2vec + độ dài']['recall20']; cvd = CVT['SVR chỉ độ dài']['recall20']
 fast, slow = H['fast'], H['slow']
-# Khung ket qua: kieu "mo" — chi vien duoi dam, nen trang (khac tuan 10: nen xam + vien trai)
+# Con so recall@20% minh bach (FB2): danh sach 20% duoc chon va tong so bai under 6
+N_SEL = int(round(0.20 * B6['test'][1])); N_LOW = B6['test'][0]
+N_CAUGHT = int(round(w['recall20'] * N_LOW))
+P_CAUGHT = int(round(w['precision20'] * N_SEL))
+wv_mean, wl_mean = CZ['mean_pred_logmel'], CZ['mean_pred_w2v']
+
+# Khung ket qua
 box = D.add_table(rows=1, cols=1); box.alignment = WD_TABLE_ALIGNMENT.CENTER; bc = box.rows[0].cells[0]
 cell_fmt(bc, 16.6, ['bottom'], 18, None, 120)
 bp = bc.paragraphs[0]; bp.add_run('Kết quả chính tuần này').bold = True; bp.paragraph_format.line_spacing = 1.5
 lead_fast = (f"Ở nửa đọc nhanh wav2vec vẫn hơn chỉ-độ-dài {vn((fast['recall20']['w2v'] - fast['recall20']['length']) * 100, 0)} điểm %"
              if fast['recall20']['w2v'] > fast['recall20']['length'] else
              f"Ở nửa đọc nhanh wav2vec không hơn chỉ-độ-dài ({pct(fast['recall20']['w2v'])} so với {pct(fast['recall20']['length'])})")
-for s in [f"Bảng CV đầy đủ cho 10 cấu hình: SVR wav2vec 2.0 đứng đầu nhóm hồi quy trên CV ({pct(cvw[0])} ± {vn(cvw[1]*100, 0)} điểm %) và trên test ({pct(w['recall20'])}). LR cân bằng lớp trên wav2vec có CV {vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0]*100, 1)}% so với {vn(cvw[0]*100, 1)}% của SVR wav2vec nhưng test thấp hơn ({pct(lrw['recall20'])} so với {pct(w['recall20'])}). Thêm hai đặc trưng độ dài vào wav2vec không đổi CV ({pct(cvwl[0])}).",
-          f"Tách test theo trung vị giây/từ ({vn(H['threshold_sec_per_word'], 2)} s/từ): {lead_fast}; nửa đọc chậm wav2vec {pct(slow['recall20']['w2v'])} so với {pct(slow['recall20']['length'])} của chỉ-độ-dài.",
-          f"Trên test có {LT['n']} câu total ≤ 2; các mô hình đoán trung bình {vn(LT['pred_mean']['SVR wav2vec 2.0'], 1)} điểm cho nhóm này. " + ("Bảng năm câu sai nặng nhất đã có ghi chú của hai người nghe." if ALL_LISTENED else "Bảng năm câu sai nặng nhất chờ hai người nghe điền ghi chú trước buổi gặp."),
-          f"Thí nghiệm phụ LR cân bằng lớp trên wav2vec: CV {vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0]*100, 1)}% (SVR wav2vec {vn(cvw[0]*100, 1)}%) nhưng test R@20% {pct(lrw['recall20'])} thấp hơn SVR wav2vec ({pct(w['recall20'])}); không thay đổi kết luận chọn hướng đặc trưng."]:
+for s in [f"Nhãn được kiểm chứng: target = trung vị năm điểm giám khảo làm tròn xuống, khớp {num(TC['floor_median'])}/5.000 câu; định nghĩa một bản ghi và kiểm chứng trên một bản ghi cụ thể ở Mục 2, người nói tách rời train/test.",
+          f"So sánh công bằng trên cùng một phép đo: bảng CV cho 10 cấu hình + test; recall@20% của SVR wav2vec 2.0 = {N_CAUGHT}/{N_LOW} bài dưới 6 {pct(w['recall20'])} (danh sách {N_SEL} bài được chọn; precision {P_CAUGHT}/{N_SEL} = {pct(w['precision20'])}).",
+          f"Completeness: trên test chỉ có {CZ['n']}/{num(CZ['n_test'])} câu bị corpus chấm completeness = 0 (total 0); mô hình mức câu vẫn đoán trung bình {vn(wv_mean, 1)} điểm (log-mel) và {vn(wl_mean, 1)} điểm (wav2vec) cho nhóm này — đặc trưng mức câu không nhìn thấy phần nội dung thiếu (Mục 6).",
+          f"Phần nghe 5 câu lỗi nặng nhất (FB3): " + ('đã có ghi chú của hai người nghe độc lập.' if ALL_LISTENED else 'chưa thực hiện — bảng ghi chờ hai người trong nhóm điền; hiện đã có số đo tự động và điểm corpus để đối chiếu.')]:
     q = bc.add_paragraph(); q.paragraph_format.line_spacing = 1.5; q.paragraph_format.space_after = Pt(0)
     q.paragraph_format.left_indent = Cm(0.5); q.paragraph_format.first_line_indent = Cm(-0.5); q.add_run('•\t' + s)
     q.paragraph_format.tab_stops.add_tab_stop(Cm(0.5))
 sp = p(); sp.paragraph_format.space_after = Pt(0)
 
-h('1. Năm việc thầy giao sau tuần 10')
-p('Bảng dưới đối chiếu từng việc trong nhận xét tuần 10 với báo cáo này. Việc nào chưa xong được ghi đúng là chưa xong.')
-booktabs(['Việc thầy giao', 'Trạng thái trong báo cáo này', 'Ở đâu'], [
-    ['1. Nghe 5 câu sai nặng nhất', ('Đã nghe và ghi chú độc lập' if ALL_LISTENED else 'Phần thống kê đã làm; phần nghe: chưa — bảng chờ hai người điền'), 'Mục 6'],
-    ['2. Bảng CV cho mọi cấu hình, chọn hướng bằng CV', 'Đã làm — CV kẹp cạnh test trong một bảng', 'Mục 3'],
-    ['3a. CV: chỉ-độ-dài, wav2vec, wav2vec + độ dài', 'Đã làm — bảng 3 dòng', 'Mục 4'],
-    ['3b. Chia test theo nửa đọc nhanh / đọc chậm', 'Đã làm — chỉ đọc dự đoán đã lưu, không chọn lại', 'Mục 5'],
-    ['4. Sửa nhãn tuần và ngày', 'Đã đính chính; nhãn link bảng đăng ký đã đổi sang Week10', 'Mục 8'],
-    ['Phụ. LR cân bằng lớp trên wav2vec (nếu còn thời gian)', 'Đã làm — thí nghiệm phụ, không bắt buộc', 'Mục 7']], [7.6, 6.4, 2.6], num_from=2)
+h('1. Ba điểm feedback sau phỏng vấn và vị trí đáp trong báo cáo này')
+p('Báo cáo tuần 11 dựng lại theo ba điểm góp ý sau buổi phỏng vấn ngày 4/11. Bảng dưới đối chiếu từng điểm với mục tương ứng; mọi số lấy từ lần chạy có ảnh Terminal ở Phụ lục.')
+booktabs(['Điểm feedback sau phỏng vấn', 'Báo cáo đáp thế nào', 'Ở đâu'], [
+    ['1. Định nghĩa một bản ghi; giải thích năm điểm giám khảo ra total; kiểm chứng trên một bản ghi; giữ người nói tách rời train/test.',
+     'Định nghĩa bản ghi + bảng kiểm nhãn trên 5.000 câu + kiểm chứng một bản ghi cụ thể', 'Mục 2'],
+    ['2. Giải thích độ dài, log-mel, wav2vec là gì; so sánh trên cùng phép đánh giá; recall@20% tính từ danh sách được chọn và tổng số bài kém.',
+     'Định nghĩa từng loại đặc trưng, cùng protocol CV/test, công thức recall minh bạch ' + f'{N_CAUGHT}/{N_LOW}', 'Mục 3–4'],
+    ['3. Tự nghe các lỗi nặng nhất; ghi điều nghe được kèm điểm thật và dự đoán; chỉ phân biệt đọc lạc đề/im lặng khi audio hỗ trợ.',
+     'Phần thống kê + completeness + số đo tự động đã làm; phần nghe chưa — bảng chờ hai người điền', 'Mục 6'],
+    ['Thêm (theo yêu cầu nhóm): làm rõ thang điểm corpus, đặc biệt completeness.', 'Thang chữ đo được trên 2.500 câu test + bảng 12 câu total ≤ 2 và 5 câu worst5 có cột completeness', 'Mục 6']],
+    [7.4, 6.0, 2.6], num_from=2)
 
-h('2. Dữ liệu, target và nhóm cần nghe lại')
-p('Giữ nguyên bài toán và dữ liệu tuần 10: speechocean762, 5.000 câu, 250 người nói tiếng Quan Thoại, 5 giám khảo (CC BY 4.0); target chính là total trong scores.json. Độ đồng thuận giữa giám khảo đã đo ở tuần 9: PCC trung bình ' + vn(V9[0], 3) + ', ICC(1,5) = ' + vn(V9[2], 3) + '.')
+h('2. Một bản ghi là gì và năm điểm giám khảo cho ra total thế nào')
+lead('Một bản ghi.', 'Một câu đọc: một mã câu (ví dụ 014040089), một người nói, một câu chữ cố định, một file WAV 16 kHz mono, và năm giám khảo độc lập của corpus chấm riêng từng từ; điểm câu gồm 5 chỉ số: accuracy, fluency, prosodic (thang 0–10) và completeness — tỉ lệ từ được đọc tốt. Cả năm người chấm thêm một điểm tổng total cho câu.')
+lead('Năm điểm giám khảo ra total thế nào.', 'Scores.json của corpus đã gộp; kiểm chứng độc lập của nhóm: total của mỗi câu = làm tròn xuống trung vị năm điểm giám khảo — khớp ' + num(TC['floor_median']) + '/5.000 câu (bảng dưới; trung vị làm tròn gần nhất chỉ khớp ' + num(TC['round_median']) + ', trung bình chỉ khớp ' + num(TC['mean_exact']) + '). Vì thế bài toán học total — không phải học trung bình.')
 booktabs(['So total trong scores.json với', 'Số câu khớp / 5.000'], [
     ['Trung vị năm điểm, làm tròn xuống', num(TC['floor_median'])], ['Trung vị năm điểm, làm tròn gần nhất', num(TC['round_median'])],
     ['Trung bình năm điểm', num(TC['mean_exact'])]], [11.0, 5.6])
-p('Tập test có ' + str(B6['test'][0]) + '/' + num(B6['test'][1]) + ' bài dưới 6 (tỉ lệ nền ' + vn(R['base_rate_test'] * 100, 1) + '%) và ' + str(LT['n']) + ' câu total ≤ 2. Mô hình vẫn chỉ xếp thứ tự ưu tiên nghe lại; giáo viên tự nghe và quyết định phản hồi.')
+ex = RT_['example']
+lead('Kiểm chứng trên một bản ghi.', 'Câu ' + ex['id'] + ': năm giám khảo cho ' + '; '.join(vn(v, 1) for v in ex['five']) + ' — trung bình ' + vn(ex['mean'], 2) + ' nhưng trung vị ' + vn(ex['median'], 1) + ' và total đúng là ' + vn(ex['total'], 0) + '. Một giám khảo chấm lệch (' + vn(min(ex['five']), 1) + ') không được kéo điểm của câu xuống. Đây cũng là lý do không dùng trung bình làm target.')
+lead('Vì sao trung vị bền.', 'Có ' + str(RT_['n_odd3']) + ' câu mà một giám khảo lệch từ 3 điểm trở lên so với trung vị bốn người còn lại; ở nhóm đó trung bình và trung vị cách nhau trung bình ' + vn(RT_['mean_shift_odd'], 2) + ' điểm, gấp đôi mức ' + vn(RT_['mean_shift_all'], 2) + ' trên toàn bộ dữ liệu.')
+lead('Người nói tách rời.', 'Chia 125 người train / 125 người test theo người nói (không phép trộn); chọn tham số bằng GroupKFold 5 phần theo người nói trên nhóm train. Kết quả test không phải cho những người mô hình đã thấy.')
 
-h('3. Bảng CV đầy đủ: chọn hướng bằng CV')
-p('Việc 2 của thầy: mọi cấu hình phải có recall@20% và MAE trên CV (GroupKFold 5 phần theo người nói, 125 người train), đặt cạnh kết quả test. Bảng dưới là toàn bộ 10 cấu hình học, kèm dòng ngẫu nhiên / hằng số để so sánh; quyết định chọn hướng đọc theo cột CV, cột test chỉ xác nhận.')
-rows, lab = [], {'Ngẫu nhiên / hằng số': 'Ngẫu nhiên / hằng số', 'SVR log-mel': 'SVR log-mel', 'RF log-mel': 'RF log-mel', 'SVR chỉ độ dài': 'SVR chỉ độ dài',
-                 'SVR log-mel bỏ độ dài': 'SVR log-mel bỏ độ dài', 'SVR log-mel + trọng số': 'SVR log-mel + trọng số', 'LR phân loại cân bằng': 'LR phân loại cân bằng',
-                 'RF phân loại cân bằng': 'RF phân loại cân bằng', 'SVR wav2vec 2.0': 'SVR wav2vec 2.0', 'SVR wav2vec + độ dài': 'SVR wav2vec + độ dài',
-                 'LR phân loại cân bằng (wav2vec)': 'LR phân loại cân bằng (wav2vec)'}
+h('3. Ba cách nhìn một bản ghi: độ dài, log-mel, wav2vec')
+lead('Chỉ hai đặc trưng độ dài.', 'Thời gian đọc (giây) và giây/từ (thời gian chia số từ câu). Chỉ đo nhịp đọc, không nghe được âm nào.')
+lead('Log-mel 81 đặc trưng.', '40 dải log-mel (khung 25 ms, bước 10 ms) trên mỗi audio; lấy trung bình và độ lệch chuẩn theo thời gian của từng dải (80) cộng độ dài câu (1) = 81. Đây là "tóm tắt âm học" mức câu: có thấy tiếng đọc to/nhỏ, đều/không đều, nhưng không biết từng âm ở đâu.')
+lead('Wav2vec 2.0 768 đặc trưng.', 'Mô hình facebook/wav2vec2-base tiền huấn luyện trên tiếng nói, giữ nguyên (đóng băng); lấy trung bình theo thời gian của tầng 8 embedding (768 chiều). Đã trích sẵn từ tuần 10, lần chạy này không trích lại.')
+lead('Cùng một phép so sánh.', 'Ba loại đặc trưng trên đi vào cùng một cách học (SVR) trên cùng tập train (125 người) và cùng tiêu chí chọn tham số (CV GroupKFold-5 theo người nói); test chạy một lần trên 125 người khác. Cột CV và cột test đặt cạnh nhau trong bảng Mục 4.')
+lead('Recall@20% là gì (đáp điểm feedback 2).', 'Xếp 2.500 câu test theo điểm dự đoán tăng dần, lấy ' + str(N_SEL) + ' bài (20%) có điểm thấp nhất — danh sách giáo viên sẽ nghe. Recall@20% = số bài thật sự dưới 6 thu được trong danh sách đó chia tổng số bài dưới 6 của test: với SVR wav2vec 2.0 là ' + str(N_CAUGHT) + '/' + str(N_LOW) + ' = ' + pct(w['recall20']) + '. Precision@20% = ' + pct(w['precision20']) + ' (' + str(P_CAUGHT) + '/' + str(N_SEL) + ' bài trong danh sách thật sự dưới 6). Tỉ lệ nền nếu chọn ngẫu nhiên là ' + vn(R['base_rate_test'] * 100, 1) + '%, recall kỳ vọng 20%.')
+
+h('4. So sánh trên cùng một split: bảng CV đầy đủ + test')
+p('Bảng dưới là toàn bộ 10 cấu hình học, kèm dòng ngẫu nhiên / hằng số; quyết định chọn hướng đọc theo cột CV, cột test chỉ xác nhận. Độ lệch chuẩn giữa các fold ' + vn(min(CVT[k]['recall20'][1] for k in CVT) * 100, 0) + '–' + vn(max(CVT[k]['recall20'][1] for k in CVT) * 100, 0) + ' điểm %, nên chênh lệch nhỏ giữa các cấu hình không đáng tin.')
 order = ['SVR log-mel', 'RF log-mel', 'SVR chỉ độ dài', 'SVR log-mel bỏ độ dài', 'SVR log-mel + trọng số', 'LR phân loại cân bằng',
          'RF phân loại cân bằng', 'SVR wav2vec 2.0', 'SVR wav2vec + độ dài', 'LR phân loại cân bằng (wav2vec)']
+rows = []
 for k in order:
     c, t = CVT[k], T(k)
-    rows.append([lab[k], pct(c['recall20'][0]) + ' ± ' + vn(c['recall20'][1] * 100, 0), (vn(c['MAE'][0], 3) + ' ± ' + vn(c['MAE'][1], 3)) if c['MAE'] else '—',
+    rows.append([k, pct(c['recall20'][0]) + ' ± ' + vn(c['recall20'][1] * 100, 0), (vn(c['MAE'][0], 3) + ' ± ' + vn(c['MAE'][1], 3)) if c['MAE'] else '—',
                  pct(t['recall20']), vn(t['MAE'], 3) if 'MAE' in t else '—'])
 rows.append(['Ngẫu nhiên / hằng số', '—', '—', pct(T('Ngẫu nhiên / hằng số')['recall20']), vn(T('Ngẫu nhiên / hằng số')['MAE'], 3)])
 booktabs(['Mô hình', 'R@20% CV (TB ± SD)', 'MAE CV (TB ± SD)', 'R@20% test', 'MAE test'], rows, [4.8, 3.0, 2.8, 2.4, 2.2], size=9.5)
-p('Đọc bảng theo cột CV: trong nhóm hồi quy, SVR wav2vec 2.0 tốt nhất (' + pct(cvw[0]) + ' ± ' + vn(cvw[1] * 100, 0) + ' điểm %, MAE ' + vn(CVT['SVR wav2vec 2.0']['MAE'][0], 3) + '), sau đó là nhóm log-mel (' + pct(min(CVT[k]['recall20'][0] for k in ['SVR log-mel', 'RF log-mel', 'SVR log-mel + trọng số', 'LR phân loại cân bằng', 'RF phân loại cân bằng'])) + '–' + pct(max(CVT[k]['recall20'][0] for k in ['SVR log-mel', 'RF log-mel', 'SVR log-mel + trọng số', 'LR phân loại cân bằng', 'RF phân loại cân bằng'])) + '); chỉ-độ-dài ' + pct(cvd[0]) + '. Các biến thể cách học trên log-mel cải thiện CV không quá ' +
-  vn((max(CVT[k]['recall20'][0] for k in ['SVR log-mel + trọng số', 'LR phân loại cân bằng', 'RF phân loại cân bằng']) - CVT['SVR log-mel']['recall20'][0]) * 100, 1) + ' điểm %. LR cân bằng lớp trên wav2vec có CV ' + pct(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0]) + ' ± ' + vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][1] * 100, 0) + ' — nhỉnh hơn SVR wav2vec ' + vn((CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0] - cvw[0]) * 100, 1) + ' điểm nhưng test chỉ ' + pct(lrw['recall20']) + ' so với ' + pct(w['recall20']) + '; chênh lệch nằm trong độ lệch chuẩn giữa các fold nên không đủ căn cứ đổi mô hình chính. Vì vậy hướng chính vẫn là đặc trưng. Độ lệch chuẩn giữa các fold ' +
-  vn(min(CVT[k]['recall20'][1] for k in order) * 100, 0) + '–' + vn(max(CVT[k]['recall20'][1] for k in order) * 100, 0) + ' điểm %, nên chênh lệch nhỏ giữa các cấu hình không đáng tin.')
-figure('fig1_cv_test.png', 15.5, 'Hình 1.', 'Recall@20% trên CV (chấm rỗng, thanh mảnh là độ lệch chuẩn giữa 5 fold) và trên test (chấm đặc) cho mọi cấu hình; số % ghi dưới chấm đặc là recall trên test, giá trị CV xem bảng ở Mục 3. Khoảng cách giữa hai chấm cho biết CV lạc quan hơn test bao nhiêu.')
+p('Đọc bảng theo cột CV: trong nhóm hồi quy, SVR wav2vec 2.0 tốt nhất (' + pct(cvw[0]) + ' ± ' + vn(cvw[1] * 100, 0) + ' điểm %, MAE ' + vn(CVT['SVR wav2vec 2.0']['MAE'][0], 3) + '); chỉ-độ-dài ' + pct(cvd[0]) + '. Thêm hai đặc trưng độ dài vào wav2vec gần như không đổi CV (' + pct(cvwl[0]) + ', MAE ' + vn(CVT['SVR wav2vec + độ dài']['MAE'][0], 3) + ' so với ' + vn(CVT['SVR wav2vec 2.0']['MAE'][0], 3) + ') — nghĩa là embedding wav2vec đã chứa phần lớn thông tin độ dài; phần nó hơn chỉ-độ-dài đến từ âm học khác tốc độ đọc. LR cân bằng lớp trên wav2vec có CV ' + pct(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0]) + ' nhưng test chỉ ' + pct(lrw['recall20']) + ' so với ' + pct(w['recall20']) + ' của SVR; chênh nằm trong độ lệch chuẩn giữa các fold nên không đủ căn cứ đổi mô hình chính (chi tiết Mục 7).')
+figure('fig1_cv_test.png', 15.5, 'Hình 1.', 'Recall@20% trên CV (chấm rỗng, thanh mảnh là độ lệch chuẩn giữa 5 fold) và trên test (chấm đặc) cho mọi cấu hình; số % ghi dưới chấm đặc là recall trên test, giá trị CV xem bảng ở Mục 4. Khoảng cách giữa hai chấm cho biết CV lạc quan hơn test bao nhiêu.')
 
-h('4. Wav2vec 2.0 thêm gì ngoài tốc độ đọc?')
-p('Việc 3a: so ba cấu hình trên cùng một phép CV — chỉ hai đặc trưng độ dài, embedding wav2vec 2.0, và wav2vec 2.0 nối thêm hai đặc trưng độ dài. Nếu wav2vec chỉ đang đo tốc độ đọc thì thêm độ dài vào sẽ không đổi gì; nếu còn thông tin khác thì wav2vec phải hơn chỉ-độ-dài.')
-booktabs(['Cấu hình (CV GroupKFold-5)', 'R@20% CV', 'MAE CV', 'R@20% test', 'MAE test'], [
-    ['Chỉ hai đặc trưng độ dài', pct(cvd[0]) + ' ± ' + vn(cvd[1] * 100, 0), vn(CVT['SVR chỉ độ dài']['MAE'][0], 3) + ' ± ' + vn(CVT['SVR chỉ độ dài']['MAE'][1], 3), pct(d0['recall20']), vn(d0['MAE'], 3)],
-    ['SVR wav2vec 2.0', pct(cvw[0]) + ' ± ' + vn(cvw[1] * 100, 0), vn(CVT['SVR wav2vec 2.0']['MAE'][0], 3) + ' ± ' + vn(CVT['SVR wav2vec 2.0']['MAE'][1], 3), pct(w['recall20']), vn(w['MAE'], 3)],
-    ['SVR wav2vec + hai đặc trưng độ dài', pct(cvwl[0]) + ' ± ' + vn(cvwl[1] * 100, 0), vn(CVT['SVR wav2vec + độ dài']['MAE'][0], 3) + ' ± ' + vn(CVT['SVR wav2vec + độ dài']['MAE'][1], 3), pct(w2l['recall20']), vn(w2l['MAE'], 3)]],
-    [5.6, 2.8, 2.8, 2.4, 2.2])
-dl = cvwl[0] - cvw[0]
-if dl < 0.01:
-    interp = ('Trên CV, thêm hai đặc trưng độ dài vào wav2vec gần như không đổi recall@20% (chênh ' + vn(dl * 100, 1) + ' điểm %). Nghĩa là embedding wav2vec 2.0 đã chứa phần lớn thông tin độ dài; phần nó hơn chỉ-độ-dài đến từ thông tin khác tốc độ đọc, đúng hướng cần tìm.')
-else:
-    interp = ('Trên CV, thêm hai đặc trưng độ dài vào wav2vec tăng recall@20% thêm ' + vn(dl * 100, 1) + ' điểm %. Nghĩa là wav2vec chưa tận dụng hết thông tin độ dài; phần vượt trội của nó là sự kết hợp của cả tốc độ đọc và âm thanh.')
-p(interp + ' MAE CV gần như không đổi (' + vn(CVT['SVR wav2vec 2.0']['MAE'][0], 3) + ' so với ' + vn(CVT['SVR wav2vec + độ dài']['MAE'][0], 3) + ').')
-
-h('5. Phép kiểm nửa đọc nhanh / đọc chậm')
-p('Việc 3b: chia 2.500 câu test thành hai nửa theo trung vị giây/từ (' + vn(H['threshold_sec_per_word'], 2) + ' giây/từ). Nửa đọc nhanh dưới trung vị, nửa đọc chậm từ trung vị trở lên. Trong từng nửa, lấy 20% câu có điểm dự đoán thấp nhất và tính tỉ lệ bài dưới 6 bắt được. Phép kiểm chỉ đọc dự đoán của mô hình đã huấn luyện ở Mục 3–4, không chọn lại tham số hay ngưỡng nào.')
+h('5. Kiểm tra nửa đọc nhanh / đọc chậm')
+p('Chia 2.500 câu test thành hai nửa theo trung vị giây/từ (' + vn(H['threshold_sec_per_word'], 2) + ' giây/từ). Trong từng nửa, lấy 20% câu có điểm dự đoán thấp nhất và tính tỉ lệ bài dưới 6 bắt được. Phép kiểm chỉ đọc dự đoán của mô hình đã huấn luyện ở Mục 3–4, không chọn lại tham số hay ngưỡng nào.')
 booktabs(['Nửa tốc độ', 'Số câu', 'Trong đó dưới 6', 'R@20% chỉ độ dài', 'R@20% wav2vec 2.0'], [
     ['Đọc nhanh (< ' + vn(H['threshold_sec_per_word'], 2) + ' s/từ)', str(fast['n']), str(fast['n_below6']), pct(fast['recall20']['length']), pct(fast['recall20']['w2v'])],
     ['Đọc chậm (≥ ' + vn(H['threshold_sec_per_word'], 2) + ' s/từ)', str(slow['n']), str(slow['n_below6']), pct(slow['recall20']['length']), pct(slow['recall20']['w2v'])]],
@@ -207,56 +215,56 @@ booktabs(['Nửa tốc độ', 'Số câu', 'Trong đó dưới 6', 'R@20% chỉ
 gap_f = (fast['recall20']['w2v'] - fast['recall20']['length']) * 100
 gap_s = (slow['recall20']['w2v'] - slow['recall20']['length']) * 100
 if gap_f >= 0:
-    concl = ('wav2vec hơn chỉ-độ-dài ở cả hai nửa (nhanh ' + vn(gap_f, 0) + ' điểm %, chậm ' + vn(gap_s, 0) + ' điểm %), nên phần vượt trội không chỉ là tốc độ đọc. Nửa đọc nhanh là nơi mô hình dựa vào tốc độ dễ bỏ sót nhất; wav2vec bắt được ' + pct(fast['recall20']['w2v']) + ' số bài dưới 6 ở nửa này so với ' + pct(fast['recall20']['length']) + ' của chỉ-độ-dài. Lưu ý nửa đọc nhanh chỉ có ' + str(fast['n_below6']) + ' bài dưới 6, nên chênh lệch ở nửa này có sai số lớn; nửa đọc chậm (' + str(slow['n_below6']) + ' bài dưới 6) mới là nơi hai mô hình gần nhau.')
+    concl = ('wav2vec hơn chỉ-độ-dài ở cả hai nửa (nhanh ' + vn(gap_f, 0) + ' điểm %, chậm ' + vn(gap_s, 0) + ' điểm %), nên phần vượt trội không chỉ là tốc độ đọc. Lưu ý nửa đọc nhanh chỉ có ' + str(fast['n_below6']) + ' bài dưới 6, nên chênh lệch ở nửa này có sai số lớn; nửa đọc chậm (' + str(slow['n_below6']) + ' bài dưới 6) mới là nơi hai mô hình gần nhau.')
 else:
     concl = ('Ở nửa đọc nhanh wav2vec không hơn chỉ-độ-dài (' + vn(gap_f, 0) + ' điểm %), còn ở nửa đọc chậm hơn ' + vn(gap_s, 0) + ' điểm %. Kết luận vẫn có giá trị: đặc trưng mức câu chủ yếu đo tốc độ đọc, cần đặc trưng theo từng âm như GOP để bắt người đọc nhanh nhưng phát âm sai.')
 p(concl)
 figure_pair(('fig2_halves.png', 'Hình 2.', 'Recall@20% trong từng nửa tốc độ; n là số câu, "<6" là số bài dưới 6 của nửa đó.'),
             ('fig3_speed_dist.png', 'Hình 3.', 'Phân bố giây/từ trên 2.500 câu test; vạch đứt là trung vị dùng để chia nửa.'))
 
-h('6. Nhóm total ≤ 2 và năm câu sai nặng nhất')
-p('Việc 1 (phần thống kê): thầy yêu cầu đếm số câu test có total ≤ 2 và xem mô hình đoán nhóm đó bao nhiêu điểm. Có ' + str(LT['n']) + ' câu như vậy trên 2.500 câu test. Bảng dưới là điểm dự đoán trung bình của ba mô hình chính cho đúng nhóm này — tất cả đều đoán cao hơn thực tế rất nhiều, đúng như lo ngại về việc mô hình dựa vào tốc độ đọc.')
-booktabs(['Mô hình', 'Điểm dự đoán TB (nhóm ' + str(LT['n']) + ' câu)', 'Số câu đoán > 5 điểm'], [
-    ['SVR log-mel', vn(LT['pred_mean']['SVR log-mel'], 2), str(LT['n_pred_above5']['SVR log-mel']) + '/' + str(LT['n'])],
-    ['SVR chỉ độ dài', vn(LT['pred_mean']['SVR chỉ độ dài'], 2), str(LT['n_pred_above5']['SVR chỉ độ dài']) + '/' + str(LT['n'])],
-    ['SVR wav2vec 2.0', vn(LT['pred_mean']['SVR wav2vec 2.0'], 2), str(LT['n_pred_above5']['SVR wav2vec 2.0']) + '/' + str(LT['n'])]], [6.0, 5.6, 5.0], num_from=1)
-p('Năm câu dưới đây là năm câu total dưới 6 mà SVR log-mel đoán cao hơn thật nhiều nhất, giống bộ tuần 10 (đã kiểm tra trùng mã câu). Audio có trong gói minh chứng, thư mục worst5. Bảng đầu là điểm của corpus và hai mô hình; bảng sau là ghi chú nghe độc lập của hai người.')
-booktabs(['Mã câu', 'Câu đọc', 'Năm điểm', 'Total', 'Log-mel', 'w2v', 'Giây'],
-         [[x['id'], x['text'], ' · '.join(vn(v, 0) if v == int(v) else vn(v, 1) for v in x['five']), vn(x['total'], 0), vn(x['pred_logmel'], 1), vn(x['pred_w2v'], 1), vn(x['duration'], 1)] for x in R['worst5']],
-         [1.9, 5.0, 4.1, 1.2, 1.5, 1.3, 1.0], num_from=2, size=8.5)
-p('Ghi chú nghe (mỗi câu hai người nghe độc lập):')
+h('6. Nhóm lỗi nặng nhất: thang điểm corpus và completeness')
+p('Phần này trả lời điểm feedback 3 và câu hỏi "vì sao bài total 0 mà mô hình vẫn đoán ~7". Nguồn số: điểm câu của corpus (accuracy, completeness, fluency, prosodic — đọc trực tiếp từ parquet gốc, khớp đúng 2.500 câu test), số đo âm học tự động trên file WAV, và dự đoán của lần chạy này. Phần nghe của con người chưa thực hiện; ghi tường minh ở cuối mục.')
+p('Trên 2.500 câu test, thang đo được của corpus: accuracy ' + vn(C_['scale']['accuracy'][0], 1) + '–' + vn(C_['scale']['accuracy'][1], 1) + ', fluency ' + vn(C_['scale']['fluency'][0], 1) + '–' + vn(C_['scale']['fluency'][1], 1) + ', prosodic ' + vn(C_['scale']['prosodic'][0], 1) + '–' + vn(C_['scale']['prosodic'][1], 1) + ', total ' + vn(C_['scale']['total'][0], 1) + '–' + vn(C_['scale']['total'][1], 1) + '; completeness đo được ' + vn(C_['scale']['completeness'][0], 2) + '–' + vn(C_['scale']['completeness'][1], 2) + ' (tài liệu corpus ghi "0–1" như tỉ lệ từ đọc tốt; dữ liệu thực dùng thang ×10, tối đa 10 — báo cáo ghi theo số đo được).')
+lead('Trước hết, nhãn total ≤ 2 khác nhau về nguyên nhân.', 'Bảng 12 câu total ≤ 2 dưới đây: chỉ ' + str(C_['n_zero_in_low12']) + ' câu có completeness = 0; ' + str(LT['n'] - C_['n_zero_in_low12']) + ' câu còn lại đọc đủ nội dung (completeness cao) nhưng phát âm sai nặng. Nghĩa là "bài rất kém" gồm cả hai loại: thiếu nội dung và đọc sai — đặc trưng mức câu không phân biệt được chỉ bằng đặc trưng mức câu.')
+booktabs(['Mã câu', 'Năm điểm', 'Total', 'Acc', 'Compl', 'Flu', 'Pros', 'Log-mel', 'w2v'],
+         [[x['id'], five_str(x['five']), vn(x['total'], 0), vn(x['acc'], 0), vn(x['compl'], 1), vn(x['flu'], 0), vn(x['pros'], 0), vn(x['pred_logmel'], 2), vn(x['pred_w2v'], 2)] for x in L2],
+         [1.9, 2.7, 1.1, 1.0, 1.3, 1.0, 1.0, 1.35, 1.35], num_from=2, size=8.5)
+n_c0 = sum(1 for x in W5C if x['compl'] == 0.0)
+lead('Năm câu sai nặng nhất (cùng bộ tuần 10, đã kiểm tra trùng mã câu).', 'Định nghĩa: năm câu total dưới 6 mà SVR log-mel đoán cao hơn thật nhiều nhất. Bảng dưới thêm cột completeness: ' + str(n_c0) + '/5 câu có completeness = 0,0 — corpus coi phần đọc không còn từ nào tin cậy (đọc lạc đề, quá nhỏ, hoặc gần như không có tiếng đọc); riêng 014040122 có 1,7, tức chỉ khoảng 17% số từ được coi là đọc tốt. Nhịp đọc của cả năm câu lại gần tốc độ đọc bình thường (trung vị test ' + vn(H['threshold_sec_per_word'], 2) + ' s/từ — xem Hình 3), nên các đặc trưng mức câu ở Mục 3 không nhìn thấy phần nội dung thiếu.')
+booktabs(['Mã câu', 'Câu đọc', 'Năm điểm', 'Total', 'Acc', 'Compl', 'Log-mel', 'w2v', 'Giây'],
+         [[x['id'], x['text'], five_str(x['five']), vn(x['total'], 0), vn(x['acc'], 0), vn(x['compl'], 1), vn(x['pred_logmel'], 2), vn(x['pred_w2v'], 2), vn(x['sec_per_word'], 1)] for x in W5C],
+         [1.6, 4.2, 2.35, 1.0, 0.9, 1.15, 1.35, 1.2, 0.9], num_from=2, size=8.5)
+lead('Số đo tự động trên file WAV (không phải nghe).', 'Bảng dưới là những gì đo được trong lần chạy này: biên độ đỉnh, RMS theo dBFS và tỉ lệ khung 25 ms có năng lượng đáng chú ý (ngưỡng = 8% biên độ khung cao nhất). Cả 5 file có tín hiệu rất nhỏ; đây là số tự động được ghi chính xác như đo, KHÔNG thay cho phần nghe của con người.')
+booktabs(['Mã câu', 'Biên độ đỉnh', 'RMS (dBFS)', 'Khung có năng lượng', 'Giây'],
+         [[x['id'], vn(x['acoustic']['peak'], 2), vn(x['acoustic']['rms_dbfs'], 1), vn(x['acoustic']['pct_frames'], 0) + '%', vn(x['acoustic']['duration_s'], 1)] for x in W5C],
+         [2.6, 2.6, 3.4, 4.0, 2.4], num_from=1)
+lead('Mô hình không nhìn thấy phần thiếu — bằng một con số.', 'Trên toàn test, chỉ ' + str(CZ['n']) + ' câu có completeness = 0 và cả ' + str(CZ['n']) + ' câu đều bị chấm total 0. Dự đoán trung bình của mô hình cho đúng nhóm này là ' + vn(wv_mean, 2) + ' (log-mel) và ' + vn(wl_mean, 2) + ' (wav2vec) — tức mô hình coi chúng là bài bình thường. Nguyên nhân: mô hình tối thiểu hoá sai số trung bình trên phần lớn 2.500 câu bình thường, nên bài rất kém bị "nén" về giữa thang (bài dưới 6 bị wav2vec đoán cao hơn thật trung bình ' + sgn(w['bias_low'], 2) + ' điểm). Completeness là điểm giám khảo corpus gán cho bài đọc; các đặc trưng mức câu không nhìn ra phần nội dung thiếu.')
+lead('Phần này đóng điểm feedback 3 thế nào.', 'Dữ liệu hiện có hỗ trợ nhận diện: điểm corpus (completeness 0) và số đo tự động cho phép nghiêng về "đọc lạc đề / không đọc đủ hoặc quá nhỏ" — nhưng xác nhận cuối cùng chỉ có tai người. Nhóm nghe bằng bộ mẫu trong minh chứng (worst5_nghe_nhanh.wav) và điền bảng dưới; chưa nghe thì bảng để trống đúng như vậy.')
+p('Ghi chú nghe (mỗi câu hai người nghe độc lập; chỉ ghi gì thật sự nghe được: có đọc hết câu không, từ nào rõ/sai/mất, im lặng dài hay tiếng ồn):')
 booktabs(['Mã câu', 'Nghe 1', 'Nghe 2'],
          [[x['id'], note(x['id'], 'nghe1'), note(x['id'], 'nghe2')] for x in R['worst5']],
          [2.4, 7.1, 7.1], num_from=1, size=9.0)
 if ALL_LISTENED:
     lead('Kết quả nghe.', 'Hai người nghe độc lập đã ghi lại điều nghe được cho cả năm câu; ghi chú giữ nguyên văn, không suy diễn thêm. Phần này dùng cho buổi vấn đáp, không thay đổi điểm dự đoán hay kết luận ở các mục trên.')
 else:
-    lead('Trạng thái phần nghe.', 'Chưa thực hiện: mỗi câu cần ít nhất hai người nghe độc lập, ghi riêng đọc đúng câu không, có im lặng/tiếng ồn/lặp từ không. Nhóm điền hai cột trống trước buổi gặp. Báo cáo không tự suy diễn nội dung audio.')
+    lead('Trạng thái phần nghe.', 'Chưa thực hiện: mỗi câu cần ít nhất hai người nghe độc lập. Báo cáo không tự suy diễn nội dung audio; phần trên chỉ dùng điểm corpus và số đo tự động có nguồn rõ.')
 
 h('7. Thí nghiệm phụ: LR cân bằng lớp trên wav2vec')
-p('Thầy ghi việc này chỉ làm nếu còn thời gian. Embedding đã trích sẵn nên chi phí gần như bằng không, nhóm làm luôn để trả lời câu hỏi vấn đáp: phân loại cân bằng lớp có hơn hồi quy trên cùng đặc trưng wav2vec không? Kết quả: CV recall@20% = ' + pct(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0]) + ' ± ' + vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][1] * 100, 0) + ' điểm %, test R@10% = ' + pct(lrw['recall10']) + ', R@20% = ' + pct(lrw['recall20']) + ' (hồi quy SVR wav2vec: R@10% = ' + pct(w['recall10']) + ', R@20% = ' + pct(w['recall20']) + '). Phân loại có CV nhỉnh hơn ' + vn((CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0] - cvw[0]) * 100, 1) + ' điểm nhưng test thấp hơn ' + vn((w['recall20'] - lrw['recall20']) * 100, 0) + ' điểm; cả hai chênh lệch đều nằm trong độ lệch chuẩn giữa các fold (' + vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][1] * 100, 0) + ' điểm). Vì vậy cách học không tạo khác biệt rõ ràng; nhóm giữ hồi quy vì cho điểm liên tục và kết quả test cao hơn. Kết luận "đổi đặc trưng quan trọng hơn đổi cách học" giữ nguyên.')
-p('Đây là thí nghiệm phụ, không nằm trong ba việc bắt buộc; nếu thầy muốn dừng thí nghiệm thì mục này chỉ để tham khảo.')
+p('Phân loại cân bằng lớp có hơn hồi quy trên cùng đặc trưng wav2vec không? CV recall@20% = ' + pct(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0]) + ' ± ' + vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][1] * 100, 0) + ' điểm %, test R@10% = ' + pct(lrw['recall10']) + ', R@20% = ' + pct(lrw['recall20']) + ' (SVR wav2vec: R@10% = ' + pct(w['recall10']) + ', R@20% = ' + pct(w['recall20']) + '). Phân loại có CV nhỉnh hơn ' + vn((CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0] - cvw[0]) * 100, 1) + ' điểm nhưng test thấp hơn ' + vn((w['recall20'] - lrw['recall20']) * 100, 0) + ' điểm; cả hai chênh đều nằm trong độ lệch chuẩn giữa các fold (' + vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][1] * 100, 0) + ' điểm). Nhóm giữ hồi quy vì cho điểm liên tục và test cao hơn. Đây là thí nghiệm phụ, không nằm trong ba điểm feedback.')
 
-h('8. Nhãn tuần và ngày')
-p('Đính chính việc 4: câu "kiểm tra lúc 09:57 ngày 21/10/2026, cuối tuần 10" trong Mục 7 báo cáo tuần 10 là sai — 21/10 thuộc tuần 9. Báo cáo này dùng tên file Group05_Week11_Report.docx, tiêu đề và chân trang đều ghi Tuần 11; ngày trên đầu trang là ngày chạy thật trong ảnh Terminal. Nhãn link trên bảng đăng ký đã được nhóm đổi sang Week10 trước khi nộp báo cáo này.')
+h('8. Chuẩn bị vấn đáp')
+lead('Vì sao trung vị bền với một giám khảo chấm lệch?', 'Có ' + str(RT_['n_odd3']) + ' câu mà một giám khảo lệch từ 3 điểm trở lên so với trung vị bốn người còn lại; ở các câu đó trung bình và trung vị cách nhau trung bình ' + vn(RT_['mean_shift_odd'], 2) + ' điểm, gấp đôi mức ' + vn(RT_['mean_shift_all'], 2) + ' trên toàn bộ dữ liệu. Ví dụ câu ' + RT_['example']['id'] + ' ở Mục 2.')
+lead('Vì sao bài total 0 vẫn bị đoán khoảng 7?', 'Hồi quy tối thiểu hoá sai số trung bình; đặc trưng mức câu không phân biệt được bài rất kém, nên dự đoán an toàn là gần trung bình. Với nhóm ' + str(CZ['n']) + ' câu completeness = 0, dự đoán trung bình là ' + vn(wv_mean, 2) + '/' + vn(wl_mean, 2) + '; điểm thật có thể đến 0. Chưa có phần nghe để xác nhận nguyên nhân từng câu — chỉ có điểm corpus và số đo tự động.')
+lead('Nếu giáo viên chỉ nghe 10% số bài, con số nào cho biết công cụ đáng dùng?', 'P@10% và R@10% (tính trong lần chạy này): với SVR wav2vec 2.0, ' + pct(w['precision10']) + ' bài trong 10% được nghe thật sự dưới 6 (ngẫu nhiên ' + pct(T('Ngẫu nhiên / hằng số')['precision10']) + '), bắt được ' + pct(w['recall10']) + ' tổng số bài dưới 6.')
+lead('Giới hạn.', 'Người nói có tiếng mẹ đẻ Quan Thoại, gồm cả trẻ em; bài đọc câu ngắn; công cụ chưa chẩn đoán từng âm và chưa có bằng chứng dùng tốt cho người học Việt Nam. Phân biệt đọc lạc đề / im lặng / nguyên nhân khác chỉ làm được khi audio hỗ trợ — hiện chưa có nghe của nhóm cho phần này.')
 
-h('9. Kết luận và hướng đi')
-p('Ba việc bắt buộc đã xong phần đo: bảng CV đầy đủ xác nhận wav2vec 2.0 là mô hình hồi quy chính (CV ' + pct(cvw[0]) + ', test ' + pct(w['recall20']) + ' recall@20%); wav2vec + độ dài không đổi CV (' + pct(cvwl[0]) + '), tức phần vượt trội không chỉ là tốc độ đọc; phép kiểm nửa đọc nhanh/chậm ' + ('xác nhận wav2vec còn hơn chỉ-độ-dài ở cả hai nửa' if gap_f >= 0 else 'cho thấy giới hạn của đặc trưng mức câu') + '. Việc còn lại là phần nghe 5 câu và chuẩn bị vấn đáp.')
-p('Nhóm giữ wav2vec 2.0 làm mô hình chính kèm bằng chứng CV; không mở thêm thí nghiệm mới trước buổi gặp. Nếu kết quả nửa đọc nhanh không như mong đợi, kết luận dự phòng của thầy vẫn đúng: đặc trưng mức câu chủ yếu đo tốc độ, muốn bắt lỗi phát âm cần đặc trưng theo từng âm như GOP.')
-
-h('10. Chuẩn bị vấn đáp')
-lead('Vì sao trung vị bền với một giám khảo chấm lệch?', 'Có ' + str(RT_['n_odd3']) + ' câu mà một giám khảo lệch từ 3 điểm trở lên so với trung vị bốn người còn lại; ở các câu đó trung bình và trung vị cách nhau trung bình ' + vn(RT_['mean_shift_odd'], 2) + ' điểm, gấp đôi mức ' + vn(RT_['mean_shift_all'], 2) + ' trên toàn bộ dữ liệu. Ví dụ câu ' + RT_['example']['id'] + ': năm điểm ' + '; '.join(vn(v, 1) for v in RT_['example']['five']) + ' cho trung bình ' + vn(RT_['example']['mean'], 2) + ' nhưng trung vị ' + vn(RT_['example']['median'], 1) + '.')
-lead('Vì sao hồi quy với đặc trưng yếu kéo dự đoán về giữa thang?', 'Mô hình tối thiểu hóa sai số trung bình; khi đặc trưng không phân biệt rõ bài tốt và bài kém, dự đoán an toàn là gần điểm trung bình. Trên test, bài dưới 6 bị SVR log-mel đoán cao hơn thật trung bình ' + sgn(l['bias_low'], 2) + ' điểm, wav2vec 2.0 còn ' + sgn(w['bias_low'], 2) + ' điểm.')
-lead('Nếu giáo viên chỉ nghe 10% số bài, con số nào cho biết công cụ có đáng dùng?', 'P@10% và R@10% (tính trong lần chạy này): với SVR wav2vec 2.0, ' + pct(w['precision10']) + ' bài trong 10% được nghe thật sự dưới 6 (ngẫu nhiên ' + pct(T('Ngẫu nhiên / hằng số')['precision10']) + '), và bắt được ' + pct(w['recall10']) + ' tổng số bài dưới 6.')
-lead('Giới hạn.', 'Người nói có tiếng mẹ đẻ Quan Thoại, gồm cả trẻ em; bài đọc câu ngắn; công cụ chưa chẩn đoán từng âm và chưa có bằng chứng dùng tốt cho người học Việt Nam.')
-
-h('11. Thời gian chạy và môi trường')
-p11 = p('Máy chạy: laptop Windows, chỉ dùng CPU (torch bản CPU), Python ' + R['python'] + ', scikit-learn ' + R['sklearn'] + '. Toàn bộ phân tích 10 cấu hình, CV và phép kiểm nửa tốc độ mất ' + vn(R['total_script_seconds'], 0) + ' giây trong lần chạy có ảnh Terminal ở Phụ lục; ba hình vẽ chạy riêng ngay sau đó. Embedding wav2vec 2.0 dùng lại bản trích sẵn của báo cáo tuần 10, không trích lại. Dự kiến, chưa đo: chỉ cần GPU nếu fine-tune wav2vec 2.0.')
+h('9. Thời gian chạy và môi trường')
+p11 = p('Máy chạy: laptop Windows, chỉ dùng CPU (torch bản CPU), Python ' + R['python'] + ', scikit-learn ' + R['sklearn'] + '. Toàn bộ phân tích 10 cấu hình, CV và phép kiểm nửa tốc độ mất ' + vn(R['total_script_seconds'], 0) + ' giây; script phân tích completeness (điểm corpus từ parquet + đo âm học từ WAV) mất ' + vn(C_['seconds'], 0) + ' giây; ba hình vẽ chạy ngay sau đó — cả ba trong lần chạy có ảnh Terminal ở Phụ lục. Embedding wav2vec 2.0 dùng lại bản trích sẵn của báo cáo tuần 10.')
 p11.paragraph_format.keep_together = True
 
 h('Phụ lục. Minh chứng chạy thật')
-figure('terminal_week11_run_win.png', 16.0, 'Hình 4.', 'Ảnh chụp cửa sổ PowerShell thật khi chạy week11_analysis.py và make_figure_week11.py lúc ' + RUN + '. Mọi số trong báo cáo lấy từ lần chạy này.')
-p('Gói minh chứng (code tuần 11, kết quả JSON/log, dự đoán từng câu test, ba hình, ảnh Terminal, audio năm câu sai nặng nhất, README hướng dẫn chạy lại) được nhúng dưới đây. Trên Word cho Windows, nháy đúp vào biểu tượng rồi chọn Open.')
+figure('terminal_week11_run_win.png', 16.0, 'Hình 4.', 'Ảnh chụp cửa sổ PowerShell thật khi chạy week11_analysis.py, week11_completeness.py và make_figure_week11.py lúc ' + RUN + '. Mọi số trong báo cáo lấy từ lần chạy này.')
+p('Gói minh chứng Group05_Week11_Attachments.zip (code tuần 11, kết quả JSON/log, dự đoán từng câu test, ba hình, ảnh Terminal, audio năm câu sai nặng nhất, README hướng dẫn chạy lại) được nhúng dưới đây vào file Group05_Week11_Report.docx. Trên Word cho Windows, nháy đúp vào biểu tượng rồi chọn Open.')
 p('[[OBJECTS]]', align=WD_ALIGN_PARAGRAPH.LEFT)
 link('Dữ liệu speechocean762 (OpenSLR SLR101): https://www.openslr.org/101/', 'https://www.openslr.org/101/')
 link('Mô hình wav2vec 2.0 base: https://huggingface.co/facebook/wav2vec2-base', 'https://huggingface.co/facebook/wav2vec2-base')

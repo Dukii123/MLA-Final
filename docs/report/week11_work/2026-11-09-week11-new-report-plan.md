@@ -39,17 +39,17 @@
 - Consumes: parquet `test-00000-of-00001.parquet` (arg[1], mặc định `C:\Users\DucAnh\AppData\Local\Temp\opencode\sp762`); `week11_results.json`; `test_predictions_week11.csv`; `worst5/*.WAV`.
 - Produces: `week11_completeness.json` (khoá: `python`, `scale`, `compl_zero`, `low_total2`, `worst5`, `acoustic5`) + `week11_completeness.log`; stdout là log đó. build_report Task 2 đọc các khoá này; package Task 5 đóng gói cả hai file.
 
-- [ ] **1.1** Ghi đè `listening_notes.json` = nội dung bản blank (5 ID × 2 cột rỗng).
-- [ ] **1.2** Đọc `make_loud_kit.py`, copy đúng thuật toán đo (khung 25 ms/bước 10 ms, ngưỡng dB thích ứng) cho `acoustic5`.
-- [ ] **1.3** Viết `week11_completeness.py`:
+- [x] **1.1** Ghi đè `listening_notes.json` = nội dung bản blank (5 ID × 2 cột rỗng).
+- [x] **1.2** Đọc `make_loud_kit.py`, copy đúng thuật toán đo (khung 25 ms/bước 10 ms, ngưỡng dB thích ứng) cho `acoustic5`.
+- [x] **1.3** Viết `week11_completeness.py`:
   - test split duy nhất; uid từ stem của path audio; assert 2.500 dòng.
   - `scale`: min/max thực của accuracy/completeness/fluency/prosodic trên test.
   - `compl_zero`: n câu completeness == 0; mean total; mean pred SVR log-mel & SVR wav2vec (từ CSV); n dưới 6 của nhóm này.
   - `low_total2`: đúng 12 câu total ≤ 2 (assert `n == results['low_total']['n']`), mỗi câu: id, text, five, total, acc/compl/flu/pros, %từ dưới 5, sec_per_word, pred_logmel, pred_w2v.
   - `worst5`: cùng các trường; assert 5 ID trùng `results['worst5']` theo thứ tự.
   - `acoustic5`: mỗi WAV worst5 — peak, RMS dBFS, % khung có năng lượng (đúng thuật toán make_loud_kit).
-- [ ] **1.4** Chạy: `python week11_completeness.py` → exit 0, mọi assert PASS, sinh JSON + log.
-- [ ] **1.5** Commit: `week11 completeness analysis + neutral listening notes`.
+- [x] **1.4** Chạy: `python week11_completeness.py` → exit 0, mọi assert PASS, sinh JSON + log.
+- [x] **1.5** Commit: `week11 completeness analysis + neutral listening notes`.
 
 ### Task 2: Viết lại build_report.py theo 3 điểm feedback (completeness là mục trọng tâm)
 
@@ -75,19 +75,19 @@
 - **Mục 9** Thời gian chạy + môi trường (nhắc thêm script completeness).
 - Phụ lục: ảnh Terminal + `[[OBJECTS]]` + 2 link.
 
-- [ ] **2.1** Đọc week09 README/scripts để mô tả đúng 81 đặc trưng log-mel.
-- [ ] **2.2** Sửa `build_report.py` theo cấu trúc trên, đọc thêm `week11_completeness.json`.
-- [ ] **2.3** Chạy `python build_report.py` → `report_before_embed.docx`.
-- [ ] **2.4** Chạy `python verify_docx.py` (bản mở rộng Task 3) → `verify_docx OK`.
-- [ ] **2.5** Commit: `rebuild week11 report around interview feedback + completeness`.
+- [x] **2.1** Đọc week09 README/scripts để mô tả đúng 81 đặc trưng log-mel.
+- [x] **2.2** Sửa `build_report.py` theo cấu trúc trên, đọc thêm `week11_completeness.json`.
+- [x] **2.3** Chạy `python build_report.py` → `report_before_embed.docx`.
+- [x] **2.4** Chạy `python verify_docx.py` (bản mở rộng Task 3) → `verify_docx OK`.
+- [x] **2.5** Commit: `rebuild week11 report around interview feedback + completeness`.
 
 ### Task 3: Mở rộng verify_docx.py (anchor số mới)
 
 **Files:** Modify `docs/report/week11_work/verify_docx.py`.
 
-- [ ] **3.1** Thêm asserts: tồn tại cột "Compl." trong bảng worst5 và **mỗi ô khớp** `week11_completeness.json['worst5'][i]['completeness']`; tồn tại chữ "Trạng thái phần nghe."; bảng Nghe 1/2 toàn ô rỗng; tổng text **không chứa** "Ghi chu thu" (chống chữ giả quay lại); còn '[['OBJECTS']]', 'Group05_Week11_Report', tiêu đề Tuần 11 (giữ cũ).
-- [ ] **3.2** Chạy PASS trên `report_before_embed.docx` và trên bản final sau Task 5.
-- [ ] **3.3** Commit (gộp với commit Task 2).
+- [x] **3.1** Thêm asserts: tồn tại cột "Compl." trong bảng worst5 và **mỗi ô khớp** `week11_completeness.json['worst5'][i]['completeness']`; tồn tại chữ "Trạng thái phần nghe."; bảng Nghe 1/2 toàn ô rỗng; tổng text **không chứa** "Ghi chu thu" (chống chữ giả quay lại); còn '[['OBJECTS']]', 'Group05_Week11_Report', tiêu đề Tuần 11 (giữ cũ).
+- [x] **3.2** Chạy PASS trên `report_before_embed.docx` và trên bản final sau Task 5.
+- [x] **3.3** Commit (gộp với commit Task 2).
 
 ### Task 4: Chạy thật lần chính thức + chụp ảnh Terminal
 
