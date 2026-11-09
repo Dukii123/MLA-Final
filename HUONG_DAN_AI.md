@@ -32,8 +32,8 @@ Dự án dự đoán điểm phát âm mức câu trên bộ **speechocean762** 
 - Web app local 4 tab, chấm thử bằng upload/ghi âm, phiếu chấm tay cho nhóm, xuất CSV; đã test end-to-end.
 - Model và dữ liệu offline: 4 file `.joblib`, wav2vec2-base 363 MB, 5.245 file WAV.
 - Phân tích tuần 11: bảng CV 10 cấu hình, phép kiểm nửa đọc nhanh/chậm, thống kê nhóm total ≤ 2, 3 hình, ảnh Terminal thật.
-- Bản báo cáo Week 11 cuối (4.432.621 byte, 7 trang) nằm trên **máy Windows của bạn DucAnh**, không nằm trong repo Mac này.
-- Bản dựng trong repo: `docs/report/week11_work/test_blank.docx` — cùng nội dung nhưng cột Nghe 1/2 để trống và ghi "chưa thực hiện".
+- Bản báo cáo Week 11 cũ (4.432.621 byte, 7 trang) nằm trên **máy Windows của bạn DucAnh**; đã bị xoá ngày 9/11 theo yêu cầu (nội dung vẫn nằm trong lịch sử git).
+- Bản dựng trong repo trước đây: `docs/report/week11_work/test_blank.docx` (cột Nghe 1/2 trống, ghi "chưa thực hiện") — đã xoá ngày 9/11 (lịch sử git vẫn giữ). Trạng thái hiện tại xem mục 2.1.
 
 **Chưa xong:**
 
@@ -81,7 +81,7 @@ Người dùng xoá toàn bộ dữ liệu tuần 11 cũ trên máy Windows; nh�
 | `docs/report/week11_work/test_predictions_week11.csv` | Dự đoán từng câu (bản gốc) |
 | `docs/report/week11_work/worst5/` | 5 WAV worst5 |
 | `docs/report/week11_work/listen_kit/` | Bộ nghe worst5: WAV 31,5 giây, phiếu, ASR Windows |
-| `docs/report/week11_work/test_blank.docx` | Báo cáo 7 trang, cột nghe để trống (bản trung thực) |
+| `docs/report/week11_work/report_before_embed.docx` | Bản dựng trung gian 9 trang, cột Nghe 1/2 trống — dùng lại khi nghe xong (`test_blank.docx` 7 trang cũ đã xoá 9/11, lịch sử git vẫn giữ) |
 | `docs/report/week11_work/2026-10-27-week11-plan.md` | Kế hoạch và các việc thầy giao |
 | `docs/report/week11_work/progress.md` | Nhật ký hoàn thành, nơi lưu bản nộp |
 | `docs/Nhan_xet_Week10_DT_Group05.docx` | Nhận xét tuần 10 của thầy (5 việc) |
@@ -207,7 +207,7 @@ Trích chữ từ báo cáo `.docx`:
 ```bash
 python3 - <<'PY'
 import zipfile, re
-z = zipfile.ZipFile('docs/report/week11_work/test_blank.docx')
+z = zipfile.ZipFile('docs/report/week11_work/report_before_embed.docx')
 xml = z.read('word/document.xml').decode('utf-8', 'ignore')
 txt = re.sub(r'</w:p>', '\n', xml)
 txt = re.sub(r'<[^>]+>', '', txt)
@@ -296,7 +296,7 @@ Giới hạn: file ≤ 25 MB, audio ≤ 30 giây; ffmpeg chuyển về WAV 16 kH
 - Nhận xét Week 10 của thầy: `docs/Nhan_xet_Week10_DT_Group05.docx` — 3 việc bắt buộc, 1 việc nên làm, 1 thí nghiệm phụ.
 - Báo cáo Week 11 (bản dựng lại 09/11/2026):
   - Bản nộp cuối: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` (4.466.710 byte, 9 trang, SHA256 bắt đầu `fd08df14`, kết thúc `f300e396`), kèm `Group05_Week11_Attachments.zip` (3.994.761 byte, 28 file, `41dd0edb...ece1a5fc`) nhúng OLE sẵn trong Word.
-  - Bản dựng trung gian: `docs/report/week11_work/report_before_embed.docx` (cột Nghe 1/2 trống). Bản `test_blank.docx` 7 trang cũ không còn dùng nữa.
+  - Bản dựng trung gian: `docs/report/week11_work/report_before_embed.docx` (cột Nghe 1/2 trống). Bản `test_blank.docx` 7 trang cũ đã xoá ngày 9/11 theo yêu cầu của bạn (lịch sử git vẫn giữ).
 - Việc nghe worst5 vẫn chưa xong. Bộ nghe: `listen_kit/worst5_nghe_nhanh.wav` hoặc 5 file tăng âm trong `listen_kit/` + `NGHE.bat`, phiếu `PHIEU_NGHE.md`. Cần hai người nghe độc lập, ghi riêng, rồi điền `listening_notes.json` (nghe1/nghe2 từng mã) và dựng lại: `python build_report.py` → `python package.py` → `node embed_packages.cjs` → `python embed_report.py <đường dẫn bản nộp>` → `python verify_docx.py <bản nộp>`.
 - Mốc: báo cáo tuần 10 ngày 21/10; phân tích tuần 11 ngày 27/10; app demo 31/10; phỏng vấn 4/11; dựng lại toàn bộ ngày 9/11/2026.
 - Chưa có báo cáo/slide tuần 12.
