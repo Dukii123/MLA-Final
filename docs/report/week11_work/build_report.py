@@ -28,6 +28,13 @@ _notes_path = P / 'listening_notes.json'
 NOTES = json.loads(_notes_path.read_text(encoding='utf-8-sig')) if _notes_path.exists() else {}
 note = lambda uid, who: str(NOTES.get(uid, {}).get(who, '')).strip()
 ALL_LISTENED = all(note(x['id'], 'nghe1') and note(x['id'], 'nghe2') for x in R['worst5'])
+ANY1 = any(note(x['id'], 'nghe1') for x in R['worst5'])
+FB3_BULLET = ('đã có ghi chú của hai người nghe độc lập cho cả năm câu.' if ALL_LISTENED else
+              ('người nghe 1 đã ghi chú cả năm câu (file WAV gốc); còn chờ người nghe 2 nghe độc lập.'
+               if ANY1 else 'chưa thực hiện — bảng ghi chờ hai người trong nhóm điền; hiện đã có số đo tự động và điểm corpus để đối chiếu.'))
+FB3_ROW = ('Hai người đã nghe cả năm câu, ghi chú nguyên văn trong bảng nghe.' if ALL_LISTENED else
+           ('Phần thống kê + completeness + số đo tự động đã làm; người nghe 1 đã ghi cả 5 câu — chờ người nghe 2' if ANY1
+            else 'Phần thống kê + completeness + số đo tự động đã làm; phần nghe chưa — bảng chờ hai người điền'))
 T = lambda k: M[k]['test']
 vn = lambda x, n: f'{x:.{n}f}'.replace('.', ',')
 pct = lambda v: f'{v*100:.0f}%'
@@ -151,7 +158,7 @@ bp = bc.paragraphs[0]; bp.add_run('Kết quả chính tuần này').bold = True;
 for s in [f"Nhãn được kiểm chứng: target = trung vị năm điểm giám khảo làm tròn xuống, khớp {num(TC['floor_median'])}/5.000 câu; định nghĩa một bản ghi và kiểm chứng trên một bản ghi cụ thể ở Mục 2, người nói tách rời train/test.",
           f"So sánh công bằng trên cùng một phép đo: bảng CV cho 10 cấu hình + test; recall@20% của SVR wav2vec 2.0 = {N_CAUGHT}/{N_LOW} bài dưới 6 {pct(w['recall20'])} (danh sách {N_SEL} bài được chọn; precision {P_CAUGHT}/{N_SEL} = {pct(w['precision20'])}).",
           f"Completeness: trên test chỉ có {CZ['n']}/{num(CZ['n_test'])} câu bị corpus chấm completeness = 0 (total 0); mô hình mức câu vẫn đoán trung bình {vn(wv_mean, 1)} điểm (log-mel) và {vn(wl_mean, 1)} điểm (wav2vec) cho nhóm này — đặc trưng mức câu không nhìn thấy phần nội dung thiếu (Mục 6).",
-          f"Phần nghe 5 câu lỗi nặng nhất (FB3): " + ('đã có ghi chú của hai người nghe độc lập.' if ALL_LISTENED else 'chưa thực hiện — bảng ghi chờ hai người trong nhóm điền; hiện đã có số đo tự động và điểm corpus để đối chiếu.')]:
+          f"Phần nghe 5 câu lỗi nặng nhất (FB3): " + FB3_BULLET]:
     q = bc.add_paragraph(); q.paragraph_format.line_spacing = 1.5; q.paragraph_format.space_after = Pt(0)
     q.paragraph_format.left_indent = Cm(0.5); q.paragraph_format.first_line_indent = Cm(-0.5); q.add_run('•\t' + s)
     q.paragraph_format.tab_stops.add_tab_stop(Cm(0.5))
@@ -165,7 +172,7 @@ booktabs(['Điểm feedback sau phỏng vấn', 'Báo cáo đáp thế nào', '�
     ['2. Giải thích độ dài, log-mel, wav2vec là gì; so sánh trên cùng phép đánh giá; recall@20% tính từ danh sách được chọn và tổng số bài kém.',
      'Định nghĩa từng loại đặc trưng, cùng protocol CV/test, công thức recall minh bạch ' + f'{N_CAUGHT}/{N_LOW}', 'Mục 3–4'],
     ['3. Tự nghe các lỗi nặng nhất; ghi điều nghe được kèm điểm thật và dự đoán; chỉ phân biệt đọc lạc đề/im lặng khi audio hỗ trợ.',
-     'Phần thống kê + completeness + số đo tự động đã làm; phần nghe chưa — bảng chờ hai người điền', 'Mục 6'],
+     FB3_ROW, 'Mục 6'],
     ['Thêm (theo yêu cầu nhóm): làm rõ thang điểm corpus, đặc biệt completeness.', 'Thang đo được trên 2.500 câu test + bảng 12 câu total ≤ 2 và 5 câu worst5 có cột completeness', 'Mục 6']],
     [7.4, 6.0, 2.6], num_from=2)
 
@@ -218,7 +225,7 @@ figure_pair(('fig2_halves.png', 'Hình 2.', 'Recall@20% trong từng nửa tốc
             ('fig3_speed_dist.png', 'Hình 3.', 'Phân bố giây/từ trên 2.500 câu test; vạch đứt là trung vị dùng để chia nửa.'))
 
 h('6. Nhóm lỗi nặng nhất: thang điểm corpus và completeness')
-p('Phần này trả lời điểm feedback 3 và câu hỏi "vì sao bài total 0 mà mô hình vẫn đoán ~7". Nguồn số: điểm câu của corpus (accuracy, completeness, fluency, prosodic — đọc trực tiếp từ parquet gốc, khớp đúng 2.500 câu test), số đo âm học tự động trên file WAV, và dự đoán của lần chạy này. Phần nghe của con người chưa thực hiện; ghi tường minh ở cuối mục.')
+p('Phần này trả lời điểm feedback 3 và câu hỏi "vì sao bài total 0 mà mô hình vẫn đoán ~7". Nguồn số: điểm câu của corpus (accuracy, completeness, fluency, prosodic — đọc trực tiếp từ parquet gốc, khớp đúng 2.500 câu test), số đo âm học tự động trên file WAV, và dự đoán của lần chạy này. Phần nghe ' + ('đã có ghi chú của hai người nghe độc lập; ghi ở cuối mục.' if ALL_LISTENED else ('đã có ghi chú của người nghe 1; ghi tường minh ở cuối mục.' if ANY1 else 'của con người chưa thực hiện; ghi tường minh ở cuối mục.')))
 p('Trên 2.500 câu test, thang đo được của corpus: accuracy ' + vn(C_['scale']['accuracy'][0], 1) + '–' + vn(C_['scale']['accuracy'][1], 1) + ', fluency ' + vn(C_['scale']['fluency'][0], 1) + '–' + vn(C_['scale']['fluency'][1], 1) + ', prosodic ' + vn(C_['scale']['prosodic'][0], 1) + '–' + vn(C_['scale']['prosodic'][1], 1) + ', total ' + vn(C_['scale']['total'][0], 1) + '–' + vn(C_['scale']['total'][1], 1) + '; completeness đo được ' + vn(C_['scale']['completeness'][0], 2) + '–' + vn(C_['scale']['completeness'][1], 2) + ' (tài liệu corpus ghi "0–1" như tỉ lệ từ đọc tốt; dữ liệu thực dùng thang ×10, tối đa 10 — báo cáo ghi theo số đo được).')
 lead('Trước hết, nhãn total ≤ 2 khác nhau về nguyên nhân.', 'Bảng 12 câu total ≤ 2 dưới đây: chỉ ' + str(C_['n_zero_in_low12']) + ' câu có completeness = 0; ' + str(LT['n'] - C_['n_zero_in_low12']) + ' câu còn lại có completeness ' + vn(min(x['compl'] for x in L2 if x['compl'] > 0), 1) + '–' + vn(max(x['compl'] for x in L2 if x['compl'] > 0), 1) + ' — đọc được một phần hoặc gần đủ nội dung nhưng phát âm sai nặng. Nghĩa là "bài rất kém" gồm cả hai loại: thiếu nội dung và đọc sai; bảng dưới cho thấy đặc trưng mức câu không nhìn ra được sự khác nhau này.')
 booktabs(['Mã câu', 'Năm điểm', 'Total', 'Acc', 'Compl', 'Flu', 'Pros', 'Log-mel', 'w2v'],
@@ -234,26 +241,22 @@ booktabs(['Mã câu', 'Biên độ đỉnh', 'RMS (dBFS)', 'Khung có năng lư�
          [[x['id'], vn(x['acoustic']['peak'], 2), vn(x['acoustic']['rms_dbfs'], 1), vn(x['acoustic']['pct_frames'], 0) + '%', vn(x['acoustic']['duration_s'], 1)] for x in W5C],
          [2.6, 2.6, 3.4, 4.0, 2.4], num_from=1)
 lead('Mô hình không nhìn thấy phần thiếu — bằng một con số.', 'Trên toàn test, chỉ ' + str(CZ['n']) + ' câu có completeness = 0 và cả ' + str(CZ['n']) + ' câu đều bị chấm total 0. Dự đoán trung bình của mô hình cho đúng nhóm này là ' + vn(wv_mean, 2) + ' (log-mel) và ' + vn(wl_mean, 2) + ' (wav2vec) — tức mô hình coi chúng là bài bình thường. Nguyên nhân: mô hình tối thiểu hoá sai số trung bình trên phần lớn 2.500 câu bình thường, nên bài rất kém bị "nén" về giữa thang (bài dưới 6 bị wav2vec đoán cao hơn thật trung bình ' + sgn(w['bias_low'], 2) + ' điểm). Completeness là điểm giám khảo corpus gán cho bài đọc; các đặc trưng mức câu không nhìn ra phần nội dung thiếu.')
-lead('Phần này đóng điểm feedback 3 thế nào.', 'Dữ liệu hiện có hỗ trợ nhận diện: điểm corpus (completeness 0) và số đo tự động cho phép nghiêng về "đọc lạc đề / không đọc đủ hoặc quá nhỏ" — nhưng xác nhận cuối cùng chỉ có tai người. Audio gốc của cả 5 câu nằm trong minh chứng (worst5/*.WAV) để nhóm nghe trực tiếp và điền bảng dưới; chưa nghe thì bảng để trống đúng như vậy.')
-p('Ghi chú nghe (mỗi câu hai người nghe độc lập; chỉ ghi gì thật sự nghe được: có đọc hết câu không, từ nào rõ/sai/mất, im lặng dài hay tiếng ồn):')
+lead('Phần này đóng điểm feedback 3 thế nào.', 'Dữ liệu hiện có hỗ trợ nhận diện: điểm corpus (completeness 0) và số đo tự động cho phép nghiêng về "đọc lạc đề / không đọc đủ hoặc quá nhỏ" — nhưng xác nhận cuối cùng chỉ có tai người. Audio gốc của cả 5 câu nằm trong minh chứng (worst5/*.WAV); ' + ('hai người trong nhóm đã nghe trực tiếp và ghi chú ở bảng dưới.' if ALL_LISTENED else ('người nghe 1 trong nhóm đã nghe trực tiếp cả năm file và ghi chú ở bảng dưới; còn chờ người nghe thứ hai nghe độc lập.' if ANY1 else 'chưa nghe thì bảng để trống đúng như vậy.')))
+p('Ghi chú nghe (mỗi câu cần hai người nghe độc lập; chỉ ghi gì thật sự nghe được: có đọc hết câu không, từ nào rõ/sai/mất, im lặng dài hay tiếng ồn):')
 booktabs(['Mã câu', 'Nghe 1', 'Nghe 2'],
          [[x['id'], note(x['id'], 'nghe1'), note(x['id'], 'nghe2')] for x in R['worst5']],
          [2.4, 7.1, 7.1], num_from=1, size=9.0)
 if ALL_LISTENED:
     lead('Kết quả nghe.', 'Hai người nghe độc lập đã ghi lại điều nghe được cho cả năm câu; ghi chú giữ nguyên văn, không suy diễn thêm. Phần này dùng cho buổi vấn đáp, không thay đổi điểm dự đoán hay kết luận ở các mục trên.')
+elif ANY1:
+    lead('Trạng thái phần nghe.', 'Người nghe 1 đã nghe trực tiếp cả năm file WAV gốc và ghi chú nguyên văn ở cột Nghe 1, không suy diễn thêm; cột Nghe 2 để trống — chờ người nghe thứ hai nghe độc lập theo yêu cầu mỗi câu hai người. Ghi chú này dùng cho buổi vấn đáp, không thay đổi điểm dự đoán hay kết luận ở các mục trên.')
 else:
     lead('Trạng thái phần nghe.', 'Chưa thực hiện: mỗi câu cần ít nhất hai người nghe độc lập. Báo cáo không tự suy diễn nội dung audio; phần trên chỉ dùng điểm corpus và số đo tự động có nguồn rõ.')
 
 h('7. Thí nghiệm phụ: LR cân bằng lớp trên wav2vec')
 p('Phân loại cân bằng lớp có hơn hồi quy trên cùng đặc trưng wav2vec không? CV recall@20% = ' + pct(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0]) + ' ± ' + vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][1] * 100, 0) + ' điểm %, test R@10% = ' + pct(lrw['recall10']) + ', R@20% = ' + pct(lrw['recall20']) + ' (SVR wav2vec: R@10% = ' + pct(w['recall10']) + ', R@20% = ' + pct(w['recall20']) + '). Phân loại có CV nhỉnh hơn ' + vn((CVT['LR phân loại cân bằng (wav2vec)']['recall20'][0] - cvw[0]) * 100, 1) + ' điểm nhưng test thấp hơn ' + vn((w['recall20'] - lrw['recall20']) * 100, 0) + ' điểm; cả hai chênh đều nằm trong độ lệch chuẩn giữa các fold (' + vn(CVT['LR phân loại cân bằng (wav2vec)']['recall20'][1] * 100, 0) + ' điểm). Nhóm giữ hồi quy vì cho điểm liên tục và test cao hơn. Đây là thí nghiệm phụ, không nằm trong ba điểm feedback.')
 
-h('8. Chuẩn bị vấn đáp')
-lead('Vì sao trung vị bền với một giám khảo chấm lệch?', 'Có ' + str(RT_['n_odd3']) + ' câu mà một giám khảo lệch từ 3 điểm trở lên so với trung vị bốn người còn lại; ở các câu đó trung bình và trung vị cách nhau trung bình ' + vn(RT_['mean_shift_odd'], 2) + ' điểm, gấp đôi mức ' + vn(RT_['mean_shift_all'], 2) + ' trên toàn bộ dữ liệu. Ví dụ câu ' + RT_['example']['id'] + ' ở Mục 2.')
-lead('Vì sao bài total 0 vẫn bị đoán khoảng 7?', 'Hồi quy tối thiểu hoá sai số trung bình; đặc trưng mức câu không phân biệt được bài rất kém, nên dự đoán an toàn là gần trung bình. Với nhóm ' + str(CZ['n']) + ' câu completeness = 0, dự đoán trung bình là ' + vn(wv_mean, 2) + '/' + vn(wl_mean, 2) + '; điểm thật có thể đến 0. Chưa có phần nghe để xác nhận nguyên nhân từng câu — chỉ có điểm corpus và số đo tự động.')
-lead('Nếu giáo viên chỉ nghe 10% số bài, con số nào cho biết công cụ đáng dùng?', 'P@10% và R@10% (tính trong lần chạy này): với SVR wav2vec 2.0, ' + pct(w['precision10']) + ' bài trong 10% được nghe thật sự dưới 6 (ngẫu nhiên ' + pct(T('Ngẫu nhiên / hằng số')['precision10']) + '), bắt được ' + pct(w['recall10']) + ' tổng số bài dưới 6.')
-lead('Giới hạn.', 'Người nói có tiếng mẹ đẻ Quan Thoại, gồm cả trẻ em; bài đọc câu ngắn; công cụ chưa chẩn đoán từng âm và chưa có bằng chứng dùng tốt cho người học Việt Nam. Phân biệt đọc lạc đề / im lặng / nguyên nhân khác chỉ làm được khi audio hỗ trợ — hiện chưa có nghe của nhóm cho phần này.')
-
-h('9. Thời gian chạy và môi trường')
+h('8. Thời gian chạy và môi trường')
 p11 = p('Máy chạy: laptop Windows, chỉ dùng CPU (torch bản CPU), Python ' + R['python'] + ', scikit-learn ' + R['sklearn'] + '. Toàn bộ phân tích 10 cấu hình, CV và phép kiểm nửa tốc độ mất ' + vn(R['total_script_seconds'], 0) + ' giây; script phân tích completeness (điểm corpus từ parquet + đo âm học từ WAV) mất ' + vn(C_['seconds'], 0) + ' giây; ba hình vẽ chạy ngay sau đó — cả ba trong lần chạy có ảnh Terminal ở Phụ lục. Embedding wav2vec 2.0 dùng lại bản trích sẵn của báo cáo tuần 10.')
 p11.paragraph_format.keep_together = True
 

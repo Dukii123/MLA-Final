@@ -1,0 +1,10 @@
+const fs=require('fs'),CFB=require('../week11_work/cfb.js');
+const bin=fs.readFileSync(process.argv[2]);
+const cfb=CFB.read(bin,{type:'buffer'});
+const entry=CFB.find(cfb,'\x01Ole10Native');
+const n=Buffer.from(entry.content);
+const total=n.readUInt32LE(0);
+const body=n.subarray(4,4+total);
+console.log('total',total,'bodylen',body.length);
+console.log('first72:', body.subarray(0,72).toString('hex'));
+console.log('ascii  :', JSON.stringify(body.subarray(0,72).toString('latin1')));

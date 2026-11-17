@@ -75,6 +75,7 @@ names = ['README.txt', 'requirements.txt', 'week11_analysis.py', 'week11_complet
          'week11_results.json', 'week11_run.log', 'week11_completeness.json', 'week11_completeness.log',
          'test_predictions_week11.csv', 'speaker_errors_test.csv',
          'fig1_cv_test.png', 'fig2_halves.png', 'fig3_speed_dist.png', 'figure_run.log', 'figure_stats.json',
+         'listening_notes.json',
          'terminal_week11_run_win.png'] + sorted('worst5/' + f.name for f in (P / 'worst5').glob('*.WAV'))
 missing = [n for n in names if not (P / n).exists()]
 assert not missing, f'thiếu file để đóng gói: {missing}'

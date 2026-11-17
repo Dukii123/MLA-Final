@@ -1,0 +1,41 @@
+{
+  "members": [
+    {
+      "name": "Phạm Đức Anh",
+      "student_id": "2301040010",
+      "contributions": [
+        "Chạy phân tích chính (week11_analysis.py): 10 cấu hình SVR/RF/LR, GroupKFold-5 theo người nói, phép kiểm nửa đọc nhanh/chậm, thí nghiệm phụ LR cân bằng lớp",
+        "Kiểm chứng nhãn: total = làm tròn xuống trung vị năm giám khảo, khớp 5.000/5.000 câu; kiểm chứng trên bản ghi 015010033; phân tích 448 câu giám khảo lệch ≥ 3 điểm",
+        "Trích đặc trưng wav2vec 2.0 tầng 8 cho 5.000 câu (hỗ trợ AI)",
+        "Quyết định sở hữu: giữ SVR thay LR cân bằng lớp sau khi đọc cột CV (80% ± 8 so với 80% ± 10, trong sai số giữa fold) và test (74% so với 77%)"
+      ]
+    },
+    {
+      "name": "Vương Trần Lâm Bình",
+      "student_id": "2301040021",
+      "contributions": [
+        "Nghe 5 câu sai nặng nhất (một trong hai người nghe độc lập) và phân tích lỗi: kết luận hai loại lỗi — đọc lạc đề và không có tiếng đọc — đối chiếu với completeness và RMS",
+        "Viết script phân tích completeness (week11_completeness.py): đọc điểm corpus từ parquet, đo âm học tự động 5 file worst5",
+        "Dựng pipeline báo cáo và kiểm chứng: build_report/verify_docx/package/nhúng OLE, render kiểm từng trang",
+        "Quyết định sở hữu: phân loại lỗi nặng nhất thành đọc lạc đề và thiếu nội dung dựa trên điều nghe được, không suy diễn từ số máy"
+      ]
+    },
+    {
+      "name": "Nguyễn Văn Lợi",
+      "student_id": "2301040111",
+      "contributions": [
+        "Tải và quản lý dataset speechocean762 (521 MB, CC BY 4.0); dựng lại 5.000 file WAV từ parquet khi thư mục WAVE bị mất",
+        "Nghe 5 câu sai nặng nhất (người nghe độc lập còn lại) và phân tích lỗi cùng thành viên 2",
+        "Quyết định sở hữu: xác nhận 2 file không có tiếng đọc (chỉ tiếng gõ) — gốc của kết luận nhóm về nhóm lỗi thiếu nội dung"
+      ]
+    }
+  ],
+  "ai_summary": "Nhóm dùng trợ lý AI (GML) hỗ trợ viết và sửa script phân tích, dựng pipeline tạo báo cáo Word (nhúng minh chứng OLE, verify, render kiểm) và soạn thảo tiếng Việt. Mọi số trong báo cáo chỉ lấy từ JSON/log của lần chạy có ảnh Terminal; thành viên rà soát lại trước khi nộp.",
+  "ai_use": [
+    {
+      "tool": "GML (trợ lý AI)",
+      "purpose": "Viết/sửa script phân tích (week11_analysis.py, week11_completeness.py), dựng pipeline báo cáo (build/verify/package/nhúng OLE/export PDF) và soạn thảo văn bản tiếng Việt.",
+      "checked": "Mọi con số được đối chiếu tự động với week11_results.json và week11_completeness.json bằng verify script; render LibreOffice từng trang để kiểm trình bày; ảnh chụp Terminal thật làm mốc số; thành viên đọc lại toàn bộ trước khi nộp."
+    }
+  ]
+}

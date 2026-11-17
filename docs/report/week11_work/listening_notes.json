@@ -1,7 +1,7 @@
 {
-  "014040089": {"nghe1": "", "nghe2": ""},
-  "069020059": {"nghe1": "", "nghe2": ""},
-  "014040122": {"nghe1": "", "nghe2": ""},
-  "014040090": {"nghe1": "", "nghe2": ""},
-  "069020075": {"nghe1": "", "nghe2": ""}
+  "014040089": {"nghe1": "Người nói phát âm: \"One, Two, Three\", nói hết câu nhưng nói sai câu của đề bài.", "nghe2": "Người nói đọc là \"One, Two, Three\", tuy nói trọn vẹn cả câu nhưng nội dung bị sai so với đề bài."},
+  "069020059": {"nghe1": "Người nói phát âm: \"Me Key\", nói hết câu nhưng lúc đầu có khoảng lặng một lúc, nhưng nói không đúng câu theo đề bài.", "nghe2": "Lúc đầu có một khoảng im lặng ngắn, sau đó người nói phát âm hết câu \"Me Key\" nhưng không đúng với câu của đề bài."},
+  "014040122": {"nghe1": "Người nói phát âm: \"I Want We\", nói hết câu, nhưng nói sai câu theo đề bài.", "nghe2": "Người nói phát âm trọn câu \"I Want We\", nhưng nói không khớp với câu theo yêu cầu của đề bài."},
+  "014040090": {"nghe1": "Có 3 tiếng gõ nhanh, không nghe thấy người nói phát âm thành tiếng.", "nghe2": "Chỉ xuất hiện 3 tiếng gõ nhịp nhanh, hoàn toàn không nghe thấy tiếng người nói phát âm."},
+  "069020075": {"nghe1": "Có 2 tiếng gõ nhanh, mạnh, cũng không nghe thấy người nói phát âm thành tiếng.", "nghe2": "Có 2 tiếng gõ dồn và mạnh, tương tự cũng không ghi nhận được âm thanh phát âm nào từ người nói."}
 }

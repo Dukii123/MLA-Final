@@ -54,6 +54,17 @@ Người dùng xoá toàn bộ dữ liệu tuần 11 cũ trên máy Windows; nh�
 - Lần chạy chính thức **11:16 ngày 9/11/2026** trong cửa sổ PowerShell thật, thứ tự analysis (253 s) → completeness (1 s) → figures; ảnh chụp `terminal_week11_run_win.png`; `verify_week11.py` PASS (worst5 đúng 5 mã tuần 10). Số bảng CV/test trùng khớp lần chạy 27/10 (deterministic, cùng seed + pipeline).
 - Bản nộp mới: `C:\Users\DucAnh\Desktop\Hanu\MLA\report_week11\Group05_Week11_Report.docx` — **4.466.710 byte, 9 trang**, SHA256 `fd08df14...f300e396`; ZIP minh chứng 3.994.761 byte, **28 file** (thêm 3 file completeness), nhúng OLE `word/embeddings/oleObject1.bin`. Đã verify bằng script và render LibreOffice từng trang (không tràn bảng, không trang trắng). Sau đó agent duyệt mã độc lập đã soi: sửa các câu suy diễn không khớp bảng (7 câu total ≤ 2 "đọc đủ nội dung" → có completeness 1,7–10,0; "nhịp đọc gần bình thường" → dao động 0,6–1,3 s/từ; "tín hiệu rất nhỏ" → RMS dưới −35 dBFS dù đỉnh 0,58–0,60), bù mục 2 trong README ZIP, và `week11_completeness.py` giờ đọc phiên bản pyarrow thật (không hard-code) — rồi đóng gói lại chính là bản này.
 
+## 2.2. Cập nhật 11/11/2026 — báo cáo cuối kỳ theo rubric
+
+Dựng **báo cáo cuối kỳ** (40% điểm) theo cấu trúc research-paper của `docs/MLA_FinalProject_Requirements_and_Rubric (1).pdf`:
+
+- Thư mục làm việc: `docs/report/final_work/` — `build_final_report.py` (6 mục paper + phụ lục A run-table/experiment-matrix, B đóng góp cá nhân + AI disclosure, C tái lập), `verify_final.py`, `package.py`, `embed_packages.cjs`, `embed_final.py`.
+- Nguồn số: **giữ nguyên lần chạy 9/11** (`week11_work/week11_results.json`, `week11_completeness.json`, ảnh Terminal) — không chạy lại mô hình.
+- Bản nộp: `C:\Users\DucAnh\Desktop\Hanu\MLA\final_report\Group05_Final_Report.docx` (nhúng OLE `Group05_Final_Evidence.zip`, 28 file) + `Group05_Final_Report.pdf` (export LibreOffice); 10 trang. Dựng lại ngày 11/11: ngày tiêu đề lấy ngày dựng, đánh số hình liền (Hình 1–3), thêm Bảng 4 số đo âm học 5 câu worst5 (ma trận thí nghiệm thành Bảng 5), verify_final bỏ assert vô hiệu.
+- Đóng góp cá nhân + AI disclosure: `final_work/final_contributions.json` (Đức Anh: phân tích + kiểm chứng nhãn + quyết định giữ SVR; Bình: nghe worst5 + script completeness + pipeline báo cáo/verify; Lợi: dataset + nghe worst5; AI GML hỗ trợ script/pipeline, kiểm chứng bằng verify + render).
+- `verify_final.py` chặn placeholder "(ĐIỀN TÊN)/(ĐIỀN NỘI DUNG)" — mọi lần dựng lại phải giữ nguyên tắc này.
+- Chạy lại pipeline final: `python build_final_report.py` → `python verify_final.py` → `python package.py` → `node embed_packages.cjs` → `python embed_final.py "C:\Users\DucAnh\Desktop\Hanu\MLA\final_report\Group05_Final_Report.docx"` → `python verify_final.py <bản nộp>`.
+
 ## 3. Bản đồ file
 
 | Đường dẫn | Nội dung |

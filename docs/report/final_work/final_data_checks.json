@@ -1,0 +1,35 @@
+{
+  "python": "3.14.5",
+  "n_utterances": 5000,
+  "checked_at": "00:20 11/11/2026",
+  "missingness": {
+    "fields_checked": [
+      "accuracy",
+      "completeness",
+      "fluency",
+      "prosodic",
+      "total",
+      "text"
+    ],
+    "n_missing_sentence_fields": 0,
+    "missing_by_field": {},
+    "n_ids_missing": 0,
+    "n_ids_not_5_ratings": 0
+  },
+  "duplicates": {
+    "n_ids": 5000,
+    "n_distinct_ids": 5000,
+    "n_distinct_texts": 4947,
+    "n_texts_repeated": 53,
+    "max_text_repeat": 2,
+    "n_speaker_text_pairs_duplicated": 0,
+    "dup_texts_top": {
+      "SO BILLY WENT INTO THE PET SHOP": 2,
+      "IT WAS GOOD FOR ME": 2,
+      "WE HAVE CLIMBED ONE STEP UP THE LADDER": 2,
+      "PLUS THE KIDS REALLY LIKE THE DOGS": 2,
+      "EVEN WHEN WE LOSE IT USUALLY A VERY CLOSE GAME": 2
+    },
+    "dup_pairs_top": {}
+  }
+}

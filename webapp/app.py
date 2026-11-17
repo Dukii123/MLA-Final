@@ -54,7 +54,9 @@ def json_file(name):
 
 @app.get('/')
 def index():
-    return FileResponse(STATIC / 'index.html')
+    resp = FileResponse(STATIC / 'index.html')
+    resp.headers['Cache-Control'] = 'no-cache'
+    return resp
 
 @app.get('/api/meta')
 def api_meta():
@@ -80,7 +82,7 @@ def audio(utt_id: str):
     p = audio_map.get(utt_id)
     if not p:
         raise HTTPException(404, 'Không có file audio cho bài này')
-    return FileResponse(p, media_type='audio/wav', filename=f'{utt_id}.WAV')
+    return FileResponse(p, media_type='audio/wav')
 
 @app.get('/audio/worst5/{utt_id}')
 def worst_audio(utt_id: str):
@@ -89,7 +91,7 @@ def worst_audio(utt_id: str):
     p = WORST_DIR / f'{utt_id}.WAV'
     if not p.exists():
         raise HTTPException(404, 'Không có file audio')
-    return FileResponse(p, media_type='audio/wav', filename=f'{utt_id}.WAV')
+    return FileResponse(p, media_type='audio/wav')
 
 @app.get('/audio/upload/{token}')
 def uploaded_audio(token: str):
@@ -98,7 +100,7 @@ def uploaded_audio(token: str):
     p = UPLOAD_DIR / f'{token}.wav'
     if not p.exists():
         raise HTTPException(404, 'File nghe lại đã bị xoá')
-    return FileResponse(p, media_type='audio/wav', filename='upload.wav')
+    return FileResponse(p, media_type='audio/wav')
 
 @app.get('/api/score-sample/{utt_id}')
 def score_sample(utt_id: str, transcript: str = ''):

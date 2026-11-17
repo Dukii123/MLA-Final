@@ -1,0 +1,10 @@
+final_data_checks — 00:20 11/11/2026
+records: 5000
+missingness: sentence fields missing = 0 (0 ids); ids khong du 5 diem giam khao = 0
+duplicates: distinct ids = 5000/5000; distinct texts = 4947; texts repeated = 53 (max repeat 2); (speaker,text) duplicated pairs = 0
+  text x2: SO BILLY WENT INTO THE PET SHOP
+  text x2: IT WAS GOOD FOR ME
+  text x2: WE HAVE CLIMBED ONE STEP UP THE LADDER
+  text x2: PLUS THE KIDS REALLY LIKE THE DOGS
+  text x2: EVEN WHEN WE LOSE IT USUALLY A VERY CLOSE GAME
+OK

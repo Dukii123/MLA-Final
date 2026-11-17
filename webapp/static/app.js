@@ -536,6 +536,47 @@ function downloadBlob(blob, filename) {
 }
 
 /* ---------------- Trình phát audio ---------------- */
+const audioBlobCache = new Map(); // url -> objectURL
+
+function audioInUseObjectUrls() {
+  const used = new Set();
+  const playerEl = document.getElementById('playerAudio');
+  if (playerEl && playerEl.src.startsWith('blob:')) used.add(playerEl.src);
+  if (state.group.audio && (state.group.audio.src || '').startsWith('blob:')) used.add(state.group.audio.src);
+  return used;
+}
+
+function evictAudioBlobCache() {
+  if (audioBlobCache.size <= 10) return;
+  const used = audioInUseObjectUrls();
+  for (const [url, objectUrl] of audioBlobCache) {
+    if (audioBlobCache.size <= 8) break;
+    if (used.has(objectUrl)) continue;
+    audioBlobCache.delete(url);
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+async function audioObjectUrl(url) {
+  if (audioBlobCache.has(url)) return audioBlobCache.get(url);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  audioBlobCache.set(url, objectUrl);
+  evictAudioBlobCache();
+  return objectUrl;
+}
+
+function audioErrText(err) {
+  // MediaError codes: 1 aborted, 2 network, 3 decode, 4 source not supported
+  if (err && typeof err.code === 'number') {
+    return ['tải bị dừng (AbortError)', 'mạng/server (NetworkError)', 'giải mã thất bại (DecodeError)', 'trình duyệt không phát được định dạng (NotSupportedError)'][err.code - 1] || `mã ${err.code}`;
+  }
+  if (err && err.name) return `${err.name}`;
+  return 'lỗi không rõ';
+}
+
 function makePlayerItem(u, model) {
   const random = model === 'Ngẫu nhiên / hằng số';
   return {
@@ -572,7 +613,7 @@ function bindPlayer() {
 
   audio.addEventListener('error', () => {
     syncIcon();
-    toast('Không tải được audio này. Thử lại sau vài giây — server có thể đang nạp, hoặc bạn vừa rời mạng cục bộ.');
+    maybeFallbackPlayerAudio();
   });
 
   audio.addEventListener('timeupdate', () => {
@@ -624,8 +665,11 @@ function bindPlayer() {
 function openPlayer(item, mode = 'test') {
   const audio = $('#playerAudio');
   state.player = item;
+  const url = mode === 'worst' ? `/audio/worst5/${item.id}` : `/audio/${item.id}`;
+  state.playerUrl = url;
+  audio.removeAttribute('data-blob-src');
   audio.pause();
-  audio.src = mode === 'worst' ? `/audio/worst5/${item.id}` : `/audio/${item.id}`;
+  audio.src = url;
   audio.load();
   const btn = $('#playerReveal');
   btn.disabled = false;
@@ -640,9 +684,36 @@ function openPlayer(item, mode = 'test') {
   $('#playerFill').style.width = '0%';
   $('#player').classList.remove('hidden');
   audio.play().catch((e) => {
-    if (e && e.name === 'NotAllowedError') return; // chặn autoplay: người dùng sẽ bấm nút phát
-    toast('Không phát được audio này. Thử bấm nút phát ở thanh dưới hoặc chờ vài giây rồi bấm lại.');
+    if (e && e.name === 'NotAllowedError') { // trình duyệt chặn autoplay: người dùng bấm nút phát
+      toast('Trình duyệt chặn autoplay — bấm nút phát ▶ ở thanh dưới.');
+      return;
+    }
+    maybeFallbackPlayerAudio();
   });
+}
+
+async function maybeFallbackPlayerAudio() {
+  // Tải thẳng rất hiếm khi lỗi trên máy local; nếu lỗi, nạp nguyên file vào bộ nhớ
+  // rồi phát qua blob: URL — bỏ qua mọi vấn đề HTTP (phạm vi, disposition, cache).
+  const audio = $('#playerAudio');
+  if (audio.dataset.blobSrc || !state.playerUrl) {
+    toast(`Không phát được audio này (${audioErrText(audio.error)}). Kiểm tra âm lượng máy — trong Chrome lưu ý biểu tượng loa trên tab.`);
+    return;
+  }
+  if (maybeFallbackPlayerAudio.inFlight) return; // error event + play rejection có thể chạy song song
+  maybeFallbackPlayerAudio.inFlight = true;
+  try {
+    const objectUrl = await audioObjectUrl(state.playerUrl);
+    audio.src = objectUrl;
+    audio.dataset.blobSrc = '1';
+    audio.load();
+    syncIcon();
+    audio.play().catch(() => {});
+  } catch (e) {
+    toast(`Không tải được audio này (${e.message}). Server có thể chưa mở — chạy lại start.bat.`);
+  } finally {
+    maybeFallbackPlayerAudio.inFlight = false;
+  }
 }
 
 function clock(sec) {
@@ -993,7 +1064,7 @@ function setGroupFull(on) {
 function toggleGroupFull() {
   const a = state.group.audio;
   if (!a || !a.src) {
-    toast('Chưa có audio để nghe lại. Chấm lại bài để tạo bản mới.');
+    toast(state.group.wantUrl ? 'Đang nạp bản ghi lại — thử lại sau giây lát.' : 'Chưa có audio để nghe lại. Chấm lại bài để tạo bản mới.');
     return;
   }
   if (!a.paused) {
@@ -1016,6 +1087,13 @@ function ensureGroupAudio(url) {
   if (!state.group.audio) {
     const a = new Audio();
     a.preload = 'auto';
+    a.addEventListener('error', () => {
+      if ((a.src || '').startsWith('blob:') || !state.group.wantUrl) {
+        toast(`Không phát được bản ghi lại (${audioErrText(a.error)}). Kiểm tra âm lượng máy & trình duyệt.`);
+      } else {
+        ensureGroupAudio(state.group.wantUrl); // thử lại qua blob
+      }
+    });
     a.addEventListener('timeupdate', () => {
       if (state.group.stopAt && a.currentTime >= state.group.stopAt) {
         a.pause();
@@ -1041,10 +1119,21 @@ function ensureGroupAudio(url) {
   state.group.stopAt = 0;
   state.group.fullPlaying = false;
   setGroupFull(false);
+  state.group.wantUrl = url || null;
   if (url) {
-    a.src = url;
-    a.load();
+    a.removeAttribute('src');
+    audioObjectUrl(url)
+      .then((objectUrl) => {
+        if (state.group.wantUrl !== url) return;
+        a.src = objectUrl;
+        a.load();
+        toast('Bản ghi lại đã sẵn sàng, bấm Nghe cả bài hoặc nút ▶ từng khoảng.');
+      })
+      .catch((e) => {
+        if (state.group.wantUrl === url) toast(`Không tải được bản ghi lại (${e.message}). Server có thể chưa mở — chạy lại start.bat.`);
+      });
   } else {
+    state.group.wantUrl = null;
     a.removeAttribute('src');
   }
 }
@@ -1053,7 +1142,7 @@ function playGroupPause(i, btn) {
   const p = state.group.pauses[i];
   const a = state.group.audio;
   if (!p || !a || !a.src) {
-    toast('Không còn audio để nghe lại. Chấm lại bài để tạo bản mới.');
+    toast(state.group.wantUrl ? 'Đang nạp bản ghi lại — thử lại sau giây lát.' : 'Không còn audio để nghe lại. Chấm lại bài để tạo bản mới.');
     return;
   }
   $$('.pause-play.playing').forEach((b) => b.classList.remove('playing'));

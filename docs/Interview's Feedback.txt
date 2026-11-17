@@ -1,0 +1,4 @@
+Post-interview feedback — 04 Nov 2026
+1. Define one recording, explain how the five ratings relate to total and show the check on one record. Keep speakers separate across training and evaluation.
+2. Explain what duration features, log-mel and wav2vec represent. Compare them on the same evaluation split and compute Recall@20% from the selected list and the total number of low-score recordings.
+3. Listen to the largest errors yourselves. For each, record what you actually hear, the rating and prediction. Distinguish off-prompt speech, silence and other issues only where the audio supports them.
